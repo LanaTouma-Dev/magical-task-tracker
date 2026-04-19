@@ -1,0 +1,40 @@
+<article class="card"
+  [class.rare]="quest.rarity==='rare'"
+  [class.epic]="quest.rarity==='epic'"
+  [class.legendary]="quest.rarity==='legendary'"
+  [class.done]="isDone"
+  [class.battling]="isBattling"
+  [class.urgency-soon]="urgency==='soon'"
+  [class.urgency-urgent]="urgency==='urgent'"
+  [class.urgency-overdue]="urgency==='overdue'">
+
+  <div class="card-top">
+    <span class="card-rarity">{{ rarityLabels[quest.rarity] }}</span>
+    <div class="card-actions">
+      <span class="card-avatar">
+        <lucide-angular [name]="rarityIcons[quest.rarity]" [size]="14" [strokeWidth]="1.75"></lucide-angular>
+      </span>
+      <button class="card-action-btn edit-btn" (click)="onEdit($event)" aria-label="Edit quest">
+        <lucide-angular name="pencil" [size]="12" [strokeWidth]="2"></lucide-angular>
+      </button>
+      <button class="card-action-btn del-btn" (click)="onDelete($event)" aria-label="Delete quest">
+        <lucide-angular name="x" [size]="13" [strokeWidth]="2.5"></lucide-angular>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-title">{{ quest.title }}</div>
+
+  <div class="card-tags" *ngIf="quest.tags.length">
+    <span class="tag" *ngFor="let t of quest.tags">#{{ t }}</span>
+  </div>
+
+  <div class="card-foot">
+    <span class="due" [class.due-soon]="urgency==='soon'"
+                      [class.due-urgent]="urgency==='urgent'"
+                      [class.due-overdue]="urgency==='overdue'">
+      {{ dueLabel || '—' }}
+    </span>
+    <span class="xp-reward">+{{ quest.xp }} XP</span>
+  </div>
+</article>

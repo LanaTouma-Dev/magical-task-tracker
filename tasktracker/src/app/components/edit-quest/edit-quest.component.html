@@ -1,0 +1,49 @@
+<div class="modal-backdrop" *ngIf="quest" (click)="onBackdrop($event)">
+  <div class="modal">
+
+    <div class="modal-header">
+      <h2>✏️ Edit Quest</h2>
+      <button class="close-btn" (click)="discard()">
+        <lucide-angular name="x" [size]="16" [strokeWidth]="2"></lucide-angular>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <label class="field">
+        <span class="field-label">Quest Title</span>
+        <input class="field-input" [(ngModel)]="title" placeholder="What needs to be done?" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Rarity</span>
+        <div class="rarity-grid">
+          <button *ngFor="let r of rarities"
+                  class="rarity-btn"
+                  [class]="r.value"
+                  [class.selected]="rarity === r.value"
+                  (click)="rarity = r.value">
+            {{ r.icon }} {{ r.label }}
+          </button>
+        </div>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Due Date <span class="hint">(today · fri · 3d · 1w)</span></span>
+        <input class="field-input" [(ngModel)]="dueDate" placeholder="e.g. fri, today, 3d" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Tags <span class="hint">(space-separated, use #)</span></span>
+        <input class="field-input" [(ngModel)]="tagsRaw" placeholder="#work #bug #design" />
+      </label>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-discard" (click)="discard()">Discard</button>
+      <button class="btn-save" (click)="save()" [disabled]="!title.trim()">Save Quest ✦</button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,149 @@
+:host { display: inline-block; }
+
+.spell-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(196,144,209,0.5);
+  background: rgba(255,255,255,0.5);
+  color: var(--ink-soft);
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.spell-btn:hover, .spell-btn.active {
+  background: var(--berry);
+  color: white;
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px -4px var(--berry);
+}
+
+/* ── centered modal ── */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(58, 35, 64, 0.35);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: grid; place-items: center;
+  animation: fade-in 0.2s ease;
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  width: 680px; max-width: 95vw;
+  max-height: 85vh;
+  display: flex; flex-direction: column;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 28px;
+  box-shadow: 0 32px 80px -20px rgba(184,51,106,0.3), 0 8px 24px -8px rgba(164,144,209,0.25);
+  animation: pop-in 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  overflow: hidden;
+}
+@keyframes pop-in {
+  from { transform: scale(0.88) translateY(12px); opacity: 0; }
+  to   { transform: scale(1) translateY(0);        opacity: 1; }
+}
+
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 24px 28px 18px;
+  border-bottom: 1px dashed rgba(184,51,106,0.2);
+  flex-shrink: 0;
+}
+.modal-title-wrap {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--berry);
+}
+.modal-header h2 {
+  font-family: var(--display); font-size: 24px; color: var(--berry); margin: 0;
+}
+.modal-header p {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--ink-soft); letter-spacing: 0.15em; margin-top: 3px;
+}
+.close-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: none; background: transparent;
+  color: var(--ink-soft); cursor: pointer;
+  display: grid; place-items: center; flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+.close-btn:hover { background: var(--berry); color: white; }
+
+.modal-body {
+  padding: 22px 28px 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ── two-column layout ── */
+.spell-cols {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+  margin-bottom: 22px;
+}
+
+.section-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-soft); margin-bottom: 12px;
+}
+
+.spell-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 5px 0;
+  font-family: var(--mono); font-size: 11px;
+}
+
+.spell-code {
+  background: rgba(196,146,80,0.12);
+  border: 1px solid rgba(196,146,80,0.3);
+  border-radius: 6px;
+  padding: 3px 9px;
+  color: #7a3b1e;
+  font-weight: 600;
+  white-space: nowrap;
+  min-width: 90px;
+}
+
+kbd {
+  display: inline-block;
+  background: white;
+  border: 1px solid rgba(164,144,209,0.4);
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--ink);
+  box-shadow: 0 1px 0 rgba(164,144,209,0.35);
+}
+
+.arrow { color: var(--ink-soft); flex-shrink: 0; }
+.spell-desc { color: var(--ink); }
+
+.legendary-text { color: var(--berry) !important; }
+.epic-text      { color: var(--wisteria) !important; }
+.rare-text      { color: #5a8fbf !important; }
+.rarity { font-weight: 700; }
+
+/* ── example box ── */
+.scroll-example {
+  background: rgba(196,144,209,0.08);
+  border: 1px dashed rgba(196,144,209,0.35);
+  border-radius: 14px;
+  padding: 14px 18px;
+  text-align: center;
+}
+.example-label {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.2em; color: var(--ink-soft);
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.example-text {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--ink); margin-bottom: 4px;
+}
+.example-text em {
+  font-style: normal; color: var(--berry); font-weight: 600;
+}
+.example-result {
+  font-family: var(--mono); font-size: 10px; color: var(--ink-soft);
+}

@@ -1,0 +1,104 @@
+<div class="spell-trigger-wrap">
+  <button class="spell-btn" (click)="toggle()" [class.active]="open()" title="Open spell sheet">
+    <lucide-angular name="sparkles" [size]="13" [strokeWidth]="1.75"></lucide-angular>
+  </button>
+
+  <div class="modal-backdrop" *ngIf="open()" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <lucide-angular name="wand-sparkles" [size]="22" [strokeWidth]="1.5"></lucide-angular>
+          <div>
+            <h2>Spell Sheet</h2>
+            <p>the art of summoning quests</p>
+          </div>
+        </div>
+        <button class="close-btn" (click)="close()">
+          <lucide-angular name="x" [size]="16" [strokeWidth]="2"></lucide-angular>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="spell-cols">
+
+          <div class="spell-col">
+            <div class="section-label">Priority Spells</div>
+            <div class="spell-row">
+              <span class="spell-code legendary-text">!boss</span>
+              <span class="arrow">→</span>
+              <span class="spell-desc"><span class="rarity legendary-text">★★★★ Legendary</span> · 100 XP</span>
+            </div>
+            <div class="spell-row">
+              <span class="spell-code epic-text">!high</span>
+              <span class="arrow">→</span>
+              <span class="spell-desc"><span class="rarity epic-text">★★★ Epic</span> · 50 XP</span>
+            </div>
+            <div class="spell-row">
+              <span class="spell-code rare-text">!med</span>
+              <span class="arrow">→</span>
+              <span class="spell-desc"><span class="rarity rare-text">★★ Rare</span> · 20 XP</span>
+            </div>
+            <div class="spell-row">
+              <span class="spell-code">!low</span>
+              <span class="arrow">→</span>
+              <span class="spell-desc"><span class="rarity">★ Common</span> · 5 XP</span>
+            </div>
+
+            <div class="section-label" style="margin-top:20px">Rune Tags</div>
+            <div class="spell-row">
+              <span class="spell-code">#work · #bug · #design</span>
+              <span class="arrow">→</span>
+              <span class="spell-desc">stack as many as needed</span>
+            </div>
+          </div>
+
+          <div class="spell-col">
+            <div class="section-label">Due Date Incantations</div>
+            <div class="spell-row">
+              <span class="spell-code">today · tomorrow</span>
+              <span class="arrow">→</span>
+              <span class="spell-desc">literal day</span>
+            </div>
+            <div class="spell-row">
+              <span class="spell-code">mon · tue · fri ...</span>
+              <span class="arrow">→</span>
+              <span class="spell-desc">next weekday</span>
+            </div>
+            <div class="spell-row">
+              <span class="spell-code">3d · 1w · 2w</span>
+              <span class="arrow">→</span>
+              <span class="spell-desc">in N days / weeks</span>
+            </div>
+
+            <div class="section-label" style="margin-top:20px">Keyboard Shortcuts</div>
+            <div class="spell-row">
+              <span class="spell-code"><kbd>N</kbd></span>
+              <span class="arrow">→</span>
+              <span class="spell-desc">focus summon bar</span>
+            </div>
+            <div class="spell-row">
+              <span class="spell-code"><kbd>Enter</kbd></span>
+              <span class="arrow">→</span>
+              <span class="spell-desc">cast the quest</span>
+            </div>
+            <div class="spell-row">
+              <span class="spell-code"><kbd>Ctrl</kbd> + <kbd>D</kbd></span>
+              <span class="arrow">→</span>
+              <span class="spell-desc">clone last quest</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="scroll-example">
+          <p class="example-label">example incantation</p>
+          <p class="example-text">fix login redirect <em>!high</em> <em>fri</em> <em>#work</em> <em>#bug</em></p>
+          <p class="example-result">→ Epic · due Friday · work, bug</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

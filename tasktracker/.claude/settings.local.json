@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(pip install *)",
+      "Bash(python manage.py startapp quests)",
+      "Bash(python manage.py makemigrations)",
+      "Bash(python manage.py migrate)",
+      "Bash(node -e \"const l = require\\('lucide-angular'\\); console.log\\(Object.keys\\(l\\).filter\\(k => ['Pencil','X','Search','Trophy','Sword','Scroll','Flask','SlidersHorizontal','ChevronDown'].includes\\(k\\)\\)\\)\")",
+      "Bash(node -e \"const pkg = require\\('./node_modules/lucide-angular/package.json'\\); console.log\\(pkg.version, pkg.exports ? 'has exports' : 'no exports'\\)\")",
+      "Bash(find \"C:\\\\Users\\\\U13634\\\\Desktop\\\\tasktracker\\\\src\\\\app\\\\components\" -name \"*.scss\" -exec grep -c \"animation:\" {} +)",
+      "Bash(awk -F: '{sum+=$NF} END {print \"Total animation occurrences:\", sum}')",
+      "Bash(find \"C:\\\\Users\\\\U13634\\\\Desktop\\\\tasktracker\\\\src\\\\app\" -name \"*.scss\" -exec grep -c \"@keyframes\" {} +)",
+      "Bash(awk -F: '{s+=$NF} END {print \"Total @keyframes:\", s}')",
+      "Bash(find \"C:\\\\Users\\\\U13634\\\\Desktop\\\\tasktracker\\\\src\\\\app\" -name \"*.scss\" -exec grep -c \"backdrop-filter.*blur\" {} +)",
+      "Bash(awk -F: '{s+=$NF} END {print \"Total backdrop-filter blur:\", s}')"
+    ]
+  }
+}
+ 

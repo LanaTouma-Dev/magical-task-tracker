@@ -1,0 +1,142 @@
+:host { display: block; }
+
+.search-wrap {
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 999px;
+  padding: 0 14px;
+  transition: border-color 0.2s, box-shadow 0.2s, border-radius 0.25s;
+  margin-bottom: 20px;
+}
+.search-wrap.active {
+  border-radius: 16px;
+  border-color: rgba(196,144,209,0.45);
+  box-shadow: 0 6px 24px -10px rgba(184,51,106,0.18);
+}
+
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+}
+
+.search-icon {
+  color: var(--ink-soft);
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none; outline: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+}
+.search-input::placeholder { color: var(--ink-soft); opacity: 0.5; }
+
+.filter-toggle {
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.05em;
+  padding: 4px 10px; border-radius: 999px;
+  border: 1px solid rgba(196,144,209,0.35);
+  background: transparent; color: var(--ink-soft);
+  cursor: pointer; white-space: nowrap;
+  transition: all 0.18s; position: relative;
+}
+.filter-toggle:hover, .filter-toggle.on {
+  background: var(--wisteria); color: white; border-color: var(--wisteria);
+}
+.filter-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--berry); flex-shrink: 0;
+}
+.filter-toggle.on .filter-dot { background: white; }
+
+.clear-btn {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: none; background: rgba(184,51,106,0.1);
+  color: var(--berry); cursor: pointer;
+  display: grid; place-items: center; flex-shrink: 0;
+  transition: background 0.18s;
+}
+.clear-btn:hover { background: var(--berry); color: white; }
+
+/* ── filters ── */
+.filters {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  padding: 10px 2px 14px;
+  border-top: 1px dashed rgba(184,51,106,0.15);
+  animation: pop-in 0.2s ease;
+}
+.filter-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.filter-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-soft); white-space: nowrap;
+}
+.filter-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+.pill {
+  font-family: var(--mono); font-size: 10px;
+  padding: 3px 9px; border-radius: 999px;
+  border: 1px solid rgba(172,172,222,0.35);
+  background: rgba(255,255,255,0.5); color: var(--ink-soft);
+  cursor: pointer; transition: all 0.15s;
+}
+.pill:hover { border-color: var(--wisteria); color: var(--berry); }
+.pill.selected {
+  background: var(--berry); color: white; border-color: var(--berry);
+  box-shadow: 0 3px 8px -4px var(--berry);
+}
+
+/* ── results ── */
+.results {
+  padding: 8px 2px 12px;
+  border-top: 1px dashed rgba(184,51,106,0.15);
+  display: flex; flex-direction: column; gap: 4px;
+  max-height: 260px; overflow-y: auto;
+}
+.results-empty {
+  text-align: center; padding: 14px;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-soft);
+  letter-spacing: 0.08em;
+}
+
+.result-card {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 10px;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid transparent;
+  transition: all 0.15s; cursor: default;
+  animation: pop-in 0.18s ease;
+}
+.result-card:hover {
+  border-color: rgba(196,144,209,0.3);
+  background: rgba(255,255,255,0.85);
+  transform: translateX(3px);
+}
+
+.result-col-icon { color: var(--ink-soft); opacity: 0.5; flex-shrink: 0; }
+.result-avatar   { font-size: 16px; flex-shrink: 0; }
+
+.result-info  { flex: 1; min-width: 0; }
+.result-title {
+  font-family: var(--body); font-weight: 700; font-size: 13px;
+  color: var(--ink); display: block;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.result-tags  { display: flex; gap: 6px; margin-top: 2px; flex-wrap: wrap; align-items: center; }
+.result-tag   { font-family: var(--mono); font-size: 9px; color: var(--ink-soft); }
+.result-rarity { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+.result-xp {
+  font-family: var(--display); font-size: 11px;
+  color: var(--berry); font-weight: 600; flex-shrink: 0;
+}
+
+.common-text    { color: var(--periwinkle); }
+.rare-text      { color: #5a8fbf; }
+.epic-text      { color: var(--wisteria); }
+.legendary-text { color: var(--berry); }

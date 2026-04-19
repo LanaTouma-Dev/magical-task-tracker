@@ -1,0 +1,73 @@
+<span class="sparkle" *ngFor="let s of sparkles; let i = index; trackBy: trackByIndex"
+      [class]="'sparkle s' + (i+1)">{{ s }}</span>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">🌙</div>
+      <div class="brand-text">
+        <h1>Quest Journal</h1>
+        <p>your personal task grimoire</p>
+      </div>
+    </div>
+
+    <div class="player">
+      <div class="level-badge">{{ stats().level }}</div>
+      <div class="xp-wrap">
+        <div class="xp-labels">
+          <span>ADVENTURER LV.{{ stats().level }}</span>
+          <span>{{ stats().xp }} / {{ xpNeeded() }} XP</span>
+        </div>
+        <div class="xp-bar"><div class="xp-fill" [style.width.%]="xpPct()"></div></div>
+      </div>
+      <div class="streak" title="daily streak">🔥 {{ stats().streak }}</div>
+    </div>
+  </header>
+
+  <div class="summon-row">
+    <qj-templates (spawn)="spawnFromTemplate($event)"></qj-templates>
+  </div>
+
+  <div class="summon">
+    <div class="summon-inner">
+      <span class="summon-prompt">✧ summon:</span>
+      <input class="summon-input"
+             [ngModel]="input()"
+             (ngModelChange)="onInputChange($event)"
+             (keydown)="onSummonKey($event)"
+             placeholder="prep demo slides !boss mon #work"
+             autocomplete="off" />
+
+      <div class="summon-chips">
+        <span class="chip" [class.prio]="c.kind==='prio'"
+                           [class.date]="c.kind==='date'"
+              *ngFor="let c of parsed().chips; trackBy: trackByIndex">{{ c.label }}</span>
+      </div>
+      <button class="cast-btn" (click)="cast()" [disabled]="!parsed().title.trim()">Cast ✦</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot dot-c"></span>common</span>
+    <span class="legend-item"><span class="legend-dot dot-r"></span>rare</span>
+    <span class="legend-item"><span class="legend-dot dot-e"></span>epic</span>
+    <span class="legend-item"><span class="legend-dot dot-l"></span>legendary</span>
+    <span class="legend-hint">try: <code>!boss</code> · <code>fri</code> · <code>#tag</code> · <code>3d</code></span>
+    <qj-spell-sheet></qj-spell-sheet>
+  </div>
+
+  <qj-search></qj-search>
+
+  <qj-board (editQuest)="openEdit($event)"></qj-board>
+
+  <qj-edit-quest [quest]="editingQuest()" (closed)="closeEdit()"></qj-edit-quest>
+
+  <div class="footer">
+    <div class="shortcuts">
+      <span><span class="kbd">N</span>new quest</span>
+      <span><span class="kbd">Ctrl</span><span class="kbd">D</span>clone last</span>
+      <span><span class="kbd">Enter</span>cast</span>
+    </div>
+    <div>✦ streak: {{ stats().streak }} days · next reward at lv.{{ stats().level + 1 }} ✦</div>
+  </div>
+</div>

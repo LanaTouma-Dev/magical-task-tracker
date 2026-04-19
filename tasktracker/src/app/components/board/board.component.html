@@ -1,0 +1,31 @@
+<div class="board">
+  <section class="column" *ngFor="let col of columns; trackBy: trackCol">
+    <div class="col-header">
+      <div class="col-title">
+        <lucide-angular [name]="col.icon" [size]="18" [strokeWidth]="1.75" class="col-icon"></lucide-angular>
+        {{ col.title }}
+      </div>
+      <span class="col-count">{{ questsIn(col.id).length }} {{ col.id === 'battle' ? 'active' : (col.id === 'defeated' ? 'slain' : 'quests') }}</span>
+    </div>
+
+    <div class="cards"
+         cdkDropList
+         [id]="'col-' + col.id"
+         [cdkDropListData]="questsIn(col.id)"
+         [cdkDropListConnectedTo]="connectedIds"
+         (cdkDropListDropped)="drop($event, col.id)">
+
+      <qj-card *ngFor="let q of questsIn(col.id); trackBy: trackQuest"
+               [quest]="q"
+               cdkDrag
+               [cdkDragData]="q"
+               (delete)="onDelete($event)"
+               (edit)="onEdit($event)">
+      </qj-card>
+
+      <div class="slot" *ngIf="questsIn(col.id).length === 0">
+        drop a quest here
+      </div>
+    </div>
+  </section>
+</div>

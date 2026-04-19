@@ -1,0 +1,75 @@
+<div class="templates-wrap">
+  <button class="tmpl-btn" (click)="toggle()" [class.active]="open()">
+    <lucide-angular name="flask-conical" [size]="14" [strokeWidth]="1.75"></lucide-angular>
+    Templates
+  </button>
+
+  <div class="modal-backdrop" *ngIf="open()" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <h2>⚗️ Quest Templates</h2>
+          <p>one-click quest summoning</p>
+        </div>
+        <button class="close-btn" (click)="close()">
+          <lucide-angular name="x" [size]="16" [strokeWidth]="2"></lucide-angular>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="section-label">⚔️ General Spells</div>
+        <div class="tmpl-grid">
+          <button class="tmpl-card" *ngFor="let t of generalTemplates" (click)="use(t)">
+            <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
+            <span class="tmpl-name">{{ t.name }}</span>
+            <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ t.rarity }}</span>
+            <div class="tmpl-tags" *ngIf="t.tags.length">
+              <span *ngFor="let tag of t.tags">#{{ tag }}</span>
+            </div>
+          </button>
+        </div>
+
+        <div class="section-label" style="margin-top:20px">🎨 Frontend Spells</div>
+        <div class="tmpl-grid">
+          <button class="tmpl-card fe" *ngFor="let t of frontendTemplates" (click)="use(t)">
+            <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
+            <span class="tmpl-name">{{ t.name }}</span>
+            <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ t.rarity }}</span>
+            <div class="tmpl-tags" *ngIf="t.tags.length">
+              <span *ngFor="let tag of t.tags">#{{ tag }}</span>
+            </div>
+          </button>
+        </div>
+
+        <div class="section-label" style="margin-top:20px">⚙️ Backend Spells</div>
+        <div class="tmpl-grid">
+          <button class="tmpl-card be" *ngFor="let t of backendTemplates" (click)="use(t)">
+            <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
+            <span class="tmpl-name">{{ t.name }}</span>
+            <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ t.rarity }}</span>
+            <div class="tmpl-tags" *ngIf="t.tags.length">
+              <span *ngFor="let tag of t.tags">#{{ tag }}</span>
+            </div>
+          </button>
+        </div>
+
+        <ng-container *ngIf="customTemplates().length">
+          <div class="section-label" style="margin-top:20px">✧ Your Saved Spells</div>
+          <div class="tmpl-grid">
+            <button class="tmpl-card custom" *ngFor="let t of customTemplates()" (click)="use(t)">
+              <button class="del-tmpl" (click)="$event.stopPropagation(); deleteCustom(t.id)">×</button>
+              <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
+              <span class="tmpl-name">{{ t.name }}</span>
+              <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ t.rarity }}</span>
+            </button>
+          </div>
+        </ng-container>
+
+        <p class="save-hint">✦ click any template to instantly summon a quest</p>
+      </div>
+
+    </div>
+  </div>
+</div>

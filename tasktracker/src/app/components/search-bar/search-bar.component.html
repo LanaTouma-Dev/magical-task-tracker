@@ -1,0 +1,60 @@
+<div class="search-wrap" [class.active]="isActive()">
+
+  <div class="search-row">
+    <lucide-angular name="search" [size]="14" [strokeWidth]="2" class="search-icon"></lucide-angular>
+    <input class="search-input"
+           [ngModel]="query()"
+           (ngModelChange)="query.set($event)"
+           placeholder="search quests or #tags..."
+           autocomplete="off" />
+
+    <button class="filter-toggle" (click)="toggleFilters()"
+            [class.on]="showFilters()" title="Filters">
+      <lucide-angular name="sliders-horizontal" [size]="13" [strokeWidth]="2"></lucide-angular>
+      <span>filter</span>
+      <span class="filter-dot" *ngIf="rarity() !== 'all' || urgency() !== 'all'"></span>
+    </button>
+
+    <button class="clear-btn" *ngIf="isActive()" (click)="clear()" title="Clear">
+      <lucide-angular name="x" [size]="12" [strokeWidth]="2.5"></lucide-angular>
+    </button>
+  </div>
+
+  <div class="filters" *ngIf="showFilters()">
+    <div class="filter-group">
+      <span class="filter-label">Rarity</span>
+      <div class="filter-pills">
+        <button *ngFor="let opt of rarityOptions"
+                class="pill" [class.selected]="rarity() === opt.value"
+                (click)="rarity.set(opt.value)">{{ opt.label }}</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Due</span>
+      <div class="filter-pills">
+        <button *ngFor="let opt of urgencyOptions"
+                class="pill" [class.selected]="urgency() === opt.value"
+                (click)="urgency.set(opt.value)">{{ opt.label }}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results" *ngIf="isActive()">
+    <div class="results-empty" *ngIf="resultCount() === 0">
+      no quests found — try a different spell
+    </div>
+    <div class="result-card" *ngFor="let q of results()">
+      <lucide-angular [name]="columnIcon(q.column)" [size]="14" [strokeWidth]="1.75" class="result-col-icon"></lucide-angular>
+      <span class="result-avatar">{{ q.avatar || '🌸' }}</span>
+      <div class="result-info">
+        <span class="result-title">{{ q.title }}</span>
+        <div class="result-tags">
+          <span class="result-tag" *ngFor="let t of q.tags">#{{ t }}</span>
+          <span class="result-rarity" [class]="q.rarity + '-text'">{{ q.rarity }}</span>
+        </div>
+      </div>
+      <span class="result-xp">+{{ q.xp }} XP</span>
+    </div>
+  </div>
+
+</div>
