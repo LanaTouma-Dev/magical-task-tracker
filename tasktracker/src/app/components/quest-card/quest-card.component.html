@@ -14,16 +14,42 @@
       <span class="card-avatar">
         <lucide-angular [name]="rarityIcons[quest.rarity]" [size]="14" [strokeWidth]="1.75"></lucide-angular>
       </span>
-      <button class="card-action-btn edit-btn" (click)="onEdit($event)" aria-label="Edit quest">
+      <button *ngIf="!isDone" class="card-action-btn done-btn" (click)="onComplete($event)" aria-label="Mark task done">
+        <lucide-angular name="check" [size]="13" [strokeWidth]="2.5"></lucide-angular>
+      </button>
+      <button *ngIf="isDone" class="card-action-btn reopen-btn" (click)="onReopen($event)" aria-label="Reopen task">
+        <lucide-angular name="rotate-ccw" [size]="12" [strokeWidth]="2.25"></lucide-angular>
+      </button>
+      <button class="card-action-btn edit-btn" (click)="onEdit($event)" aria-label="Edit task">
         <lucide-angular name="pencil" [size]="12" [strokeWidth]="2"></lucide-angular>
       </button>
-      <button class="card-action-btn del-btn" (click)="onDelete($event)" aria-label="Delete quest">
+      <button class="card-action-btn del-btn" (click)="onDelete($event)" aria-label="Delete task">
         <lucide-angular name="x" [size]="13" [strokeWidth]="2.5"></lucide-angular>
       </button>
     </div>
   </div>
 
   <div class="card-title">{{ quest.title }}</div>
+
+  <div class="card-notes" *ngIf="quest.notes">{{ quest.notes }}</div>
+
+  <div class="subtasks" *ngIf="subtaskTotal">
+    <div class="subtask-bar-row">
+      <div class="subtask-bar"><div class="subtask-fill" [style.width.%]="subtaskPct"></div></div>
+      <span class="subtask-count">{{ subtaskDone }}/{{ subtaskTotal }}</span>
+    </div>
+    <ul class="subtask-list">
+      <li *ngFor="let s of subtasks; trackBy: trackSub">
+        <button type="button" class="subtask-item" [class.checked]="s.done"
+                (click)="onToggleSubtask($event, s.id)">
+          <span class="subtask-box">
+            <lucide-angular *ngIf="s.done" name="check" [size]="11" [strokeWidth]="3"></lucide-angular>
+          </span>
+          <span class="subtask-text">{{ s.title }}</span>
+        </button>
+      </li>
+    </ul>
+  </div>
 
   <div class="card-tags" *ngIf="quest.tags.length">
     <span class="tag" *ngFor="let t of quest.tags">#{{ t }}</span>

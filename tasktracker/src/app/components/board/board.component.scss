@@ -1,5 +1,37 @@
 :host { display: block; }
 
+.focus-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 56px 24px;
+  color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+}
+.focus-empty lucide-angular { color: var(--wisteria); }
+.focus-empty-title {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--berry);
+}
+.focus-empty-sub {
+  font-size: 13px;
+  max-width: 460px;
+  line-height: 1.5;
+}
+.focus-empty-sub code {
+  font-family: var(--mono);
+  color: var(--berry);
+  background: rgba(184, 51, 106, 0.1);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

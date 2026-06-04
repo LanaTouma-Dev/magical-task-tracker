@@ -15,9 +15,11 @@ class Quest(models.Model):
     ]
 
     title        = models.CharField(max_length=500)
+    notes        = models.TextField(blank=True, default='')
     rarity       = models.CharField(max_length=20, choices=RARITY_CHOICES, default='common')
     column       = models.CharField(max_length=20, choices=COLUMN_CHOICES, default='backlog')
     tags         = models.JSONField(default=list, blank=True)
+    subtasks     = models.JSONField(default=list, blank=True)
     due_date     = models.CharField(max_length=50, blank=True, default='')
     avatar       = models.CharField(max_length=10, blank=True, default='')
     xp           = models.IntegerField(default=5)

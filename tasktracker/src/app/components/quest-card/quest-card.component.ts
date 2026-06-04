@@ -14,8 +14,11 @@ import { getUrgency, formatDueLabel, Urgency } from '../../utils/due-date.util';
 })
 export class QuestCardComponent {
   @Input({ required: true }) quest!: Quest;
-  @Output() delete = new EventEmitter<string>();
-  @Output() edit   = new EventEmitter<Quest>();
+  @Output() delete   = new EventEmitter<string>();
+  @Output() edit     = new EventEmitter<Quest>();
+  @Output() complete = new EventEmitter<string>();
+  @Output() reopen   = new EventEmitter<string>();
+  @Output() toggleSubtask = new EventEmitter<{ questId: string; subtaskId: string }>();
 
   readonly rarityLabels = RARITY_LABEL;
   readonly rarityIcons  = RARITY_ICON;
@@ -32,6 +35,20 @@ export class QuestCardComponent {
     return formatDueLabel(this.quest.dueDate, this.isDone, this.quest.completedAt);
   }
 
-  onDelete(ev: Event) { ev.stopPropagation(); this.delete.emit(this.quest.id); }
-  onEdit(ev: Event)   { ev.stopPropagation(); this.edit.emit(this.quest); }
+  onDelete(ev: Event)   { ev.stopPropagation(); this.delete.emit(this.quest.id); }
+  onEdit(ev: Event)     { ev.stopPropagation(); this.edit.emit(this.quest); }
+  onComplete(ev: Event) { ev.stopPropagation(); this.complete.emit(this.quest.id); }
+  onReopen(ev: Event)   { ev.stopPropagation(); this.reopen.emit(this.quest.id); }
+
+  get subtasks()      { return this.quest.subtasks ?? []; }
+  get subtaskDone()   { return this.subtasks.filter(s => s.done).length; }
+  get subtaskTotal()  { return this.subtasks.length; }
+  get subtaskPct()    { return this.subtaskTotal ? Math.round((this.subtaskDone / this.subtaskTotal) * 100) : 0; }
+
+  onToggleSubtask(ev: Event, subtaskId: string) {
+    ev.stopPropagation();
+    this.toggleSubtask.emit({ questId: this.quest.id, subtaskId });
+  }
+
+  trackSub(_i: number, s: { id: string }) { return s.id; }
 }

@@ -64,10 +64,10 @@ export function formatDueLabel(token: string | undefined, isDone: boolean, compl
   if (isDone && completedAt) {
     const delta = Date.now() - new Date(completedAt).getTime();
     const mins = Math.floor(delta / 60000);
-    if (mins < 60) return `slain · ${mins || 1}m ago`;
+    if (mins < 60) return `done · ${mins || 1}m ago`;
     const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `slain · ${hrs}h ago`;
-    return `slain · ${Math.floor(hrs / 24)}d ago`;
+    if (hrs < 24) return `done · ${hrs}h ago`;
+    return `done · ${Math.floor(hrs / 24)}d ago`;
   }
   if (!token) return '—';
 

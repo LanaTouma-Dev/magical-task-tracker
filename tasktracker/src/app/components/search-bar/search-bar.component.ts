@@ -27,10 +27,10 @@ export class SearchBarComponent {
 
   readonly rarityOptions: { value: RarityFilter; label: string }[] = [
     { value: 'all',       label: 'All'       },
-    { value: 'common',    label: '★ Common'   },
-    { value: 'rare',      label: '★★ Rare'    },
-    { value: 'epic',      label: '★★★ Epic'   },
-    { value: 'legendary', label: '★★★★ Boss'  },
+    { value: 'common',    label: 'Low'       },
+    { value: 'rare',      label: 'Medium'    },
+    { value: 'epic',      label: 'High'      },
+    { value: 'legendary', label: 'Critical'  },
   ];
 
   readonly urgencyOptions: { value: UrgencyFilter; label: string }[] = [

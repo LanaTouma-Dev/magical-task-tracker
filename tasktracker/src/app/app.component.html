@@ -25,6 +25,11 @@
 
   <div class="summon-row">
     <qj-templates (spawn)="spawnFromTemplate($event)"></qj-templates>
+    <button class="focus-btn" [class.active]="focusToday()" (click)="toggleFocus()"
+            [title]="focusToday() ? 'Show all tasks' : 'Show only what is due today or overdue'">
+      <lucide-angular name="target" [size]="14" [strokeWidth]="1.75"></lucide-angular>
+      {{ focusToday() ? 'Today only' : 'Today' }}
+    </button>
   </div>
 
   <div class="summon">

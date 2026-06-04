@@ -45,9 +45,10 @@ body::before {
   position: fixed; inset: 0;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.35;
+  /* Static grain. No mix-blend-mode: blending a full-viewport layer over the
+     backdrop-filter surfaces forced a full recomposite on every frame. */
+  opacity: 0.12;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
-  mix-blend-mode: overlay;
 }
 
 .sparkle {

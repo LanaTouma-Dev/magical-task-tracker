@@ -23,11 +23,13 @@ function toClientQuest(raw: any): Quest {
   return {
     id: String(raw.id),
     title: raw.title,
+    notes: raw.notes || undefined,
     rarity: raw.rarity,
     column: raw.column,
     tags: raw.tags ?? [],
     dueDate: raw.due_date || undefined,
     avatar: raw.avatar || undefined,
+    subtasks: raw.subtasks ?? [],
     xp: raw.xp,
     createdAt: raw.created_at,
     completedAt: raw.completed_at ?? undefined,
@@ -37,9 +39,11 @@ function toClientQuest(raw: any): Quest {
 function toApiQuest(q: Partial<Quest> & { title: string }): Record<string, any> {
   return {
     title: q.title,
+    notes: q.notes ?? '',
     rarity: q.rarity ?? 'common',
     column: q.column ?? 'backlog',
     tags: q.tags ?? [],
+    subtasks: q.subtasks ?? [],
     due_date: q.dueDate ?? '',
     avatar: q.avatar ?? pickAvatar(q.rarity ?? 'common', q.tags ?? []),
     xp: RARITY_XP[q.rarity ?? 'common'],
@@ -54,9 +58,14 @@ export class QuestStore {
   private readonly _stats  = signal<PlayerStats>({ level: 1, xp: 0, streak: 0, lastActiveDate: '' });
   private readonly _loading = signal(true);
 
-  readonly quests  = this._quests.asReadonly();
-  readonly stats   = this._stats.asReadonly();
-  readonly loading = this._loading.asReadonly();
+  private readonly _focusToday = signal(false);
+
+  readonly quests     = this._quests.asReadonly();
+  readonly stats      = this._stats.asReadonly();
+  readonly loading    = this._loading.asReadonly();
+  readonly focusToday = this._focusToday.asReadonly();
+
+  toggleFocusToday() { this._focusToday.update(v => !v); }
 
   constructor() {
     this.loadAll();
@@ -133,8 +142,10 @@ export class QuestStore {
   update(id: string, changes: Partial<Quest>) {
     const apiChanges: Record<string, any> = {};
     if (changes.title   !== undefined) apiChanges['title']    = changes.title;
+    if (changes.notes   !== undefined) apiChanges['notes']    = changes.notes ?? '';
     if (changes.rarity  !== undefined) { apiChanges['rarity'] = changes.rarity; apiChanges['xp'] = RARITY_XP[changes.rarity]; }
     if (changes.tags    !== undefined) apiChanges['tags']     = changes.tags;
+    if (changes.subtasks!== undefined) apiChanges['subtasks'] = changes.subtasks;
     if (changes.dueDate !== undefined) apiChanges['due_date'] = changes.dueDate ?? '';
 
     this._quests.update(list =>

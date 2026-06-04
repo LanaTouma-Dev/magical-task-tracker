@@ -1,14 +1,22 @@
 export type Rarity = 'common' | 'rare' | 'epic' | 'legendary';
 export type ColumnId = 'backlog' | 'battle' | 'defeated';
 
+export interface Subtask {
+  id: string;
+  title: string;
+  done: boolean;
+}
+
 export interface Quest {
   id: string;
   title: string;
+  notes?: string;
   rarity: Rarity;
   column: ColumnId;
   tags: string[];
   dueDate?: string;       // ISO date or relative token ("fri", "mon", "3d")
   avatar?: string;        // emoji
+  subtasks?: Subtask[];
   xp: number;
   createdAt: string;
   completedAt?: string;
@@ -45,5 +53,5 @@ export const RARITY_LABEL: Record<Rarity, string> = {
 export const COLUMNS: { id: ColumnId; title: string; icon: string }[] = [
   { id: 'backlog',  title: 'To do',       icon: 'circle-dashed' },
   { id: 'battle',   title: 'In progress', icon: 'loader'        },
-  { id: 'defeated', title: 'Done',        icon: 'check-circle'  },
+  { id: 'defeated', title: 'Done',        icon: 'circle-check'  },
 ];

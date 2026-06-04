@@ -1,6 +1,7 @@
 import { Component, computed, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LucideAngularModule } from 'lucide-angular';
 import { BoardComponent } from './components/board/board.component';
 import { SpellSheetComponent } from './components/spell-sheet/spell-sheet.component';
 import { EditQuestComponent } from './components/edit-quest/edit-quest.component';
@@ -14,7 +15,7 @@ import { NotificationService } from './services/notification.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, BoardComponent, SpellSheetComponent, EditQuestComponent, TemplatesComponent, SearchBarComponent],
+  imports: [CommonModule, FormsModule, LucideAngularModule, BoardComponent, SpellSheetComponent, EditQuestComponent, TemplatesComponent, SearchBarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -26,7 +27,10 @@ export class AppComponent {
   constructor() { this.notifs.init(); }
 
   readonly stats = this.store.stats;
+  readonly focusToday = this.store.focusToday;
   readonly input = signal('');
+
+  toggleFocus() { this.store.toggleFocusToday(); }
 
   readonly parsed = computed(() => this.parser.parse(this.input()));
 
@@ -69,7 +73,20 @@ export class AppComponent {
   closeEdit()            { this.editingQuest.set(null); }
 
   spawnFromTemplate(partial: Partial<Quest> & { title: string }) {
-    this.store.add(partial);
+    // Open the editor prefilled with the template so it can be tweaked before posting.
+    // An empty id marks this as a draft (new task) rather than an edit.
+    this.editingQuest.set({
+      id: '',
+      title: partial.title,
+      notes: partial.notes,
+      rarity: partial.rarity ?? 'common',
+      column: 'backlog',
+      tags: partial.tags ?? [],
+      dueDate: partial.dueDate,
+      avatar: partial.avatar,
+      xp: 0,
+      createdAt: '',
+    });
   }
 
   trackByIndex(i: number) { return i; }

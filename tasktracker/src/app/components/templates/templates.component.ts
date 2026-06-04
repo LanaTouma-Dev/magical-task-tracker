@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output, signal } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-import { Quest, Rarity } from '../../models/quest';
+import { Quest, Rarity, RARITY_LABEL } from '../../models/quest';
 
 export interface QuestTemplate {
   id: string;
@@ -46,6 +46,7 @@ export class TemplatesComponent {
   @Output() spawn = new EventEmitter<Partial<Quest> & { title: string }>();
   @Output() closed = new EventEmitter<void>();
 
+  readonly rarityLabels = RARITY_LABEL;
   open = signal(false);
   customTemplates = signal<QuestTemplate[]>(this.loadCustom());
 

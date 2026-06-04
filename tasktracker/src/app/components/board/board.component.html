@@ -1,4 +1,10 @@
-<div class="board">
+<div class="focus-empty" *ngIf="focusEmpty()">
+  <lucide-angular name="circle-check" [size]="28" [strokeWidth]="1.5"></lucide-angular>
+  <p class="focus-empty-title">Nothing due today</p>
+  <p class="focus-empty-sub">Tasks with a due date of <b>today</b> or <b>overdue</b> show up here. Add a due date (e.g. <code>today</code>) to a task, or turn off the Today filter to see everything.</p>
+</div>
+
+<div class="board" *ngIf="!focusEmpty()">
   <section class="column" *ngFor="let col of columns; trackBy: trackCol">
     <div class="col-header">
       <div class="col-title">
@@ -20,7 +26,10 @@
                cdkDrag
                [cdkDragData]="q"
                (delete)="onDelete($event)"
-               (edit)="onEdit($event)">
+               (edit)="onEdit($event)"
+               (complete)="onComplete($event)"
+               (reopen)="onReopen($event)"
+               (toggleSubtask)="onToggleSubtask($event)">
       </qj-card>
 
       <div class="slot" *ngIf="questsIn(col.id).length === 0">

@@ -184,6 +184,28 @@
   margin-bottom: 10px;
 }
 
+.focus-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--berry);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(184, 51, 106, 0.25);
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+.focus-btn:hover { transform: translateY(-1px); }
+.focus-btn.active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--berry), #d64a8a);
+  border-color: transparent;
+  box-shadow: 0 6px 16px -6px var(--berry);
+}
+
 /* ─── SUMMON ─── */
 .summon {
   background: rgba(255, 255, 255, 0.55);
@@ -210,8 +232,7 @@
     var(--wisteria) 20%,
     transparent 40%
   );
-  opacity: 0.12;
-  animation: spin 8s linear infinite;
+  opacity: 0.1;
   z-index: 0;
 }
 .summon-inner {

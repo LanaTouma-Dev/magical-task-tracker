@@ -23,7 +23,7 @@
           <button class="tmpl-card" *ngFor="let t of generalTemplates" (click)="use(t)">
             <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
             <span class="tmpl-name">{{ t.name }}</span>
-            <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ t.rarity }}</span>
+            <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ rarityLabels[t.rarity] }}</span>
             <div class="tmpl-tags" *ngIf="t.tags.length">
               <span *ngFor="let tag of t.tags">#{{ tag }}</span>
             </div>
@@ -35,7 +35,7 @@
           <button class="tmpl-card fe" *ngFor="let t of frontendTemplates" (click)="use(t)">
             <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
             <span class="tmpl-name">{{ t.name }}</span>
-            <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ t.rarity }}</span>
+            <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ rarityLabels[t.rarity] }}</span>
             <div class="tmpl-tags" *ngIf="t.tags.length">
               <span *ngFor="let tag of t.tags">#{{ tag }}</span>
             </div>
@@ -47,7 +47,7 @@
           <button class="tmpl-card be" *ngFor="let t of backendTemplates" (click)="use(t)">
             <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
             <span class="tmpl-name">{{ t.name }}</span>
-            <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ t.rarity }}</span>
+            <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ rarityLabels[t.rarity] }}</span>
             <div class="tmpl-tags" *ngIf="t.tags.length">
               <span *ngFor="let tag of t.tags">#{{ tag }}</span>
             </div>
@@ -61,7 +61,7 @@
               <button class="del-tmpl" (click)="$event.stopPropagation(); deleteCustom(t.id)">×</button>
               <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
               <span class="tmpl-name">{{ t.name }}</span>
-              <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ t.rarity }}</span>
+              <span class="tmpl-rarity" [class]="t.rarity + '-text'">{{ rarityLabels[t.rarity] }}</span>
             </button>
           </div>
         </ng-container>
