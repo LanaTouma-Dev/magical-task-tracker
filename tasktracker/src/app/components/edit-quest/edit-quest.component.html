@@ -2,7 +2,7 @@
   <div class="modal">
 
     <div class="modal-header">
-      <h2>✏️ Edit Quest</h2>
+      <h2>Edit task</h2>
       <button class="close-btn" (click)="discard()">
         <lucide-angular name="x" [size]="16" [strokeWidth]="2"></lucide-angular>
       </button>
@@ -11,12 +11,12 @@
     <div class="modal-body">
 
       <label class="field">
-        <span class="field-label">Quest Title</span>
+        <span class="field-label">Title</span>
         <input class="field-input" [(ngModel)]="title" placeholder="What needs to be done?" />
       </label>
 
       <label class="field">
-        <span class="field-label">Rarity</span>
+        <span class="field-label">Priority</span>
         <div class="rarity-grid">
           <button *ngFor="let r of rarities"
                   class="rarity-btn"
@@ -42,7 +42,7 @@
 
     <div class="modal-footer">
       <button class="btn-discard" (click)="discard()">Discard</button>
-      <button class="btn-save" (click)="save()" [disabled]="!title.trim()">Save Quest ✦</button>
+      <button class="btn-save" (click)="save()" [disabled]="!title.trim()">Save</button>
     </div>
 
   </div>

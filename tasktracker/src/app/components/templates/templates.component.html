@@ -9,8 +9,7 @@
 
       <div class="modal-header">
         <div>
-          <h2>⚗️ Quest Templates</h2>
-          <p>one-click quest summoning</p>
+          <h2>Templates</h2>
         </div>
         <button class="close-btn" (click)="close()">
           <lucide-angular name="x" [size]="16" [strokeWidth]="2"></lucide-angular>
@@ -19,7 +18,7 @@
 
       <div class="modal-body">
 
-        <div class="section-label">⚔️ General Spells</div>
+        <div class="section-label">General</div>
         <div class="tmpl-grid">
           <button class="tmpl-card" *ngFor="let t of generalTemplates" (click)="use(t)">
             <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
@@ -31,7 +30,7 @@
           </button>
         </div>
 
-        <div class="section-label" style="margin-top:20px">🎨 Frontend Spells</div>
+        <div class="section-label" style="margin-top:20px">Frontend</div>
         <div class="tmpl-grid">
           <button class="tmpl-card fe" *ngFor="let t of frontendTemplates" (click)="use(t)">
             <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
@@ -43,7 +42,7 @@
           </button>
         </div>
 
-        <div class="section-label" style="margin-top:20px">⚙️ Backend Spells</div>
+        <div class="section-label" style="margin-top:20px">Backend</div>
         <div class="tmpl-grid">
           <button class="tmpl-card be" *ngFor="let t of backendTemplates" (click)="use(t)">
             <span class="tmpl-avatar">{{ t.avatar || '🌸' }}</span>
@@ -56,7 +55,7 @@
         </div>
 
         <ng-container *ngIf="customTemplates().length">
-          <div class="section-label" style="margin-top:20px">✧ Your Saved Spells</div>
+          <div class="section-label" style="margin-top:20px">Saved</div>
           <div class="tmpl-grid">
             <button class="tmpl-card custom" *ngFor="let t of customTemplates()" (click)="use(t)">
               <button class="del-tmpl" (click)="$event.stopPropagation(); deleteCustom(t.id)">×</button>
@@ -67,7 +66,7 @@
           </div>
         </ng-container>
 
-        <p class="save-hint">✦ click any template to instantly summon a quest</p>
+        <p class="save-hint">click a template to add it</p>
       </div>
 
     </div>

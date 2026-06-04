@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import {
@@ -10,6 +10,7 @@ import {
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,6 +22,9 @@ export const appConfig: ApplicationConfig = {
       FlaskConical, SlidersHorizontal, Skull, Flame,
       Zap, Sparkles, WandSparkles, Star, BookOpen,
       ClipboardList, ShieldCheck, CircleX
-    })),
+    })), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }),
   ]
 };

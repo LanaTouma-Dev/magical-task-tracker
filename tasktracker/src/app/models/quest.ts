@@ -36,14 +36,14 @@ export const RARITY_ICON: Record<Rarity, string> = {
 };
 
 export const RARITY_LABEL: Record<Rarity, string> = {
-  common: '★  COMMON',
-  rare: '★★  RARE',
-  epic: '★★★  EPIC',
-  legendary: '★★★★  LEGENDARY',
+  common:    'low',
+  rare:      'medium',
+  epic:      'high',
+  legendary: 'critical',
 };
 
 export const COLUMNS: { id: ColumnId; title: string; icon: string }[] = [
-  { id: 'backlog',  title: 'Backlog',   icon: 'scroll' },
-  { id: 'battle',   title: 'In Battle', icon: 'sword'  },
-  { id: 'defeated', title: 'Defeated',  icon: 'trophy' },
+  { id: 'backlog',  title: 'To do',       icon: 'circle-dashed' },
+  { id: 'battle',   title: 'In progress', icon: 'loader'        },
+  { id: 'defeated', title: 'Done',        icon: 'check-circle'  },
 ];
