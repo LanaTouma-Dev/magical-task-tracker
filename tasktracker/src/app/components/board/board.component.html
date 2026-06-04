@@ -5,7 +5,7 @@
         <lucide-angular [name]="col.icon" [size]="18" [strokeWidth]="1.75" class="col-icon"></lucide-angular>
         {{ col.title }}
       </div>
-      <span class="col-count">{{ questsIn(col.id).length }} {{ col.id === 'battle' ? 'active' : (col.id === 'defeated' ? 'slain' : 'quests') }}</span>
+      <span class="col-count">{{ questsIn(col.id).length }} {{ col.id === 'battle' ? 'active' : (col.id === 'defeated' ? 'done' : 'tasks') }}</span>
     </div>
 
     <div class="cards"
@@ -24,7 +24,7 @@
       </qj-card>
 
       <div class="slot" *ngIf="questsIn(col.id).length === 0">
-        drop a quest here
+        drop here
       </div>
     </div>
   </section>

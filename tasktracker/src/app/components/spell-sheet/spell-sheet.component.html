@@ -1,5 +1,5 @@
 <div class="spell-trigger-wrap">
-  <button class="spell-btn" (click)="toggle()" [class.active]="open()" title="Open spell sheet">
+  <button class="spell-btn" (click)="toggle()" [class.active]="open()" title="Syntax guide">
     <lucide-angular name="sparkles" [size]="13" [strokeWidth]="1.75"></lucide-angular>
   </button>
 
@@ -10,8 +10,8 @@
         <div class="modal-title-wrap">
           <lucide-angular name="wand-sparkles" [size]="22" [strokeWidth]="1.5"></lucide-angular>
           <div>
-            <h2>Spell Sheet</h2>
-            <p>the art of summoning quests</p>
+            <h2>Syntax</h2>
+            <p>command reference</p>
           </div>
         </div>
         <button class="close-btn" (click)="close()">
@@ -24,29 +24,29 @@
         <div class="spell-cols">
 
           <div class="spell-col">
-            <div class="section-label">Priority Spells</div>
+            <div class="section-label">Priority</div>
             <div class="spell-row">
               <span class="spell-code legendary-text">!boss</span>
               <span class="arrow">→</span>
-              <span class="spell-desc"><span class="rarity legendary-text">★★★★ Legendary</span> · 100 XP</span>
+              <span class="spell-desc"><span class="rarity legendary-text">critical</span> · 100 XP</span>
             </div>
             <div class="spell-row">
               <span class="spell-code epic-text">!high</span>
               <span class="arrow">→</span>
-              <span class="spell-desc"><span class="rarity epic-text">★★★ Epic</span> · 50 XP</span>
+              <span class="spell-desc"><span class="rarity epic-text">high</span> · 50 XP</span>
             </div>
             <div class="spell-row">
               <span class="spell-code rare-text">!med</span>
               <span class="arrow">→</span>
-              <span class="spell-desc"><span class="rarity rare-text">★★ Rare</span> · 20 XP</span>
+              <span class="spell-desc"><span class="rarity rare-text">medium</span> · 20 XP</span>
             </div>
             <div class="spell-row">
               <span class="spell-code">!low</span>
               <span class="arrow">→</span>
-              <span class="spell-desc"><span class="rarity">★ Common</span> · 5 XP</span>
+              <span class="spell-desc"><span class="rarity">low</span> · 5 XP</span>
             </div>
 
-            <div class="section-label" style="margin-top:20px">Rune Tags</div>
+            <div class="section-label" style="margin-top:20px">Tags</div>
             <div class="spell-row">
               <span class="spell-code">#work · #bug · #design</span>
               <span class="arrow">→</span>
@@ -55,7 +55,7 @@
           </div>
 
           <div class="spell-col">
-            <div class="section-label">Due Date Incantations</div>
+            <div class="section-label">Due dates</div>
             <div class="spell-row">
               <span class="spell-code">today · tomorrow</span>
               <span class="arrow">→</span>
@@ -76,26 +76,26 @@
             <div class="spell-row">
               <span class="spell-code"><kbd>N</kbd></span>
               <span class="arrow">→</span>
-              <span class="spell-desc">focus summon bar</span>
+              <span class="spell-desc">focus input</span>
             </div>
             <div class="spell-row">
               <span class="spell-code"><kbd>Enter</kbd></span>
               <span class="arrow">→</span>
-              <span class="spell-desc">cast the quest</span>
+              <span class="spell-desc">add task</span>
             </div>
             <div class="spell-row">
               <span class="spell-code"><kbd>Ctrl</kbd> + <kbd>D</kbd></span>
               <span class="arrow">→</span>
-              <span class="spell-desc">clone last quest</span>
+              <span class="spell-desc">clone last</span>
             </div>
           </div>
 
         </div>
 
         <div class="scroll-example">
-          <p class="example-label">example incantation</p>
+          <p class="example-label">example</p>
           <p class="example-text">fix login redirect <em>!high</em> <em>fri</em> <em>#work</em> <em>#bug</em></p>
-          <p class="example-result">→ Epic · due Friday · work, bug</p>
+          <p class="example-result">→ high · due Friday · work, bug</p>
         </div>
 
       </div>
