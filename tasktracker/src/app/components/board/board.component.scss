@@ -105,21 +105,34 @@
 }
 .cards::-webkit-scrollbar-thumb:hover { background: rgba(184, 51, 106, 0.4); }
 
+/* column-specific background tints */
+.cards--backlog  { background: transparent; }
+.cards--battle   { background: rgba(171,218,252,0.06); border-radius: 12px; }
+.cards--defeated { background: rgba(54,179,126,0.05); border-radius: 12px; }
+
 .slot {
-  border: 2px dashed rgba(184, 51, 106, 0.25);
-  border-radius: 16px;
-  padding: 24px 16px;
+  border: 2px dashed rgba(184, 51, 106, 0.2);
+  border-radius: 14px;
+  padding: 20px 16px;
   text-align: center;
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--ink-soft);
-  letter-spacing: 0.1em;
+  color: rgba(107, 85, 119, 0.5);
+  letter-spacing: 0.05em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
 }
+.slot-icon { opacity: 0.4; }
 
 .cdk-drop-list-receiving .slot {
   border-color: var(--berry);
   background: rgba(184, 51, 106, 0.05);
+  color: var(--berry);
 }
+.cdk-drop-list-receiving .slot .slot-icon { opacity: 0.8; }
 
 @media (max-width: 900px) {
   .board { grid-template-columns: 1fr; }

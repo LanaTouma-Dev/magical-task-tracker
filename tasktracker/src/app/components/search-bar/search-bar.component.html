@@ -5,7 +5,7 @@
     <input class="search-input"
            [ngModel]="query()"
            (ngModelChange)="query.set($event)"
-           placeholder="search quests or #tags..."
+           placeholder="search tasks or #tags..."
            autocomplete="off" />
 
     <button class="filter-toggle" (click)="toggleFilters()"
@@ -22,7 +22,7 @@
 
   <div class="filters" *ngIf="showFilters()">
     <div class="filter-group">
-      <span class="filter-label">Rarity</span>
+      <span class="filter-label">Priority</span>
       <div class="filter-pills">
         <button *ngFor="let opt of rarityOptions"
                 class="pill" [class.selected]="rarity() === opt.value"
@@ -41,7 +41,7 @@
 
   <div class="results" *ngIf="isActive()">
     <div class="results-empty" *ngIf="resultCount() === 0">
-      no quests found — try a different spell
+      no tasks found
     </div>
     <div class="result-card" *ngFor="let q of results()">
       <lucide-angular [name]="columnIcon(q.column)" [size]="14" [strokeWidth]="1.75" class="result-col-icon"></lucide-angular>
@@ -53,7 +53,7 @@
           <span class="result-rarity" [class]="q.rarity + '-text'">{{ q.rarity }}</span>
         </div>
       </div>
-      <span class="result-xp">+{{ q.xp }} XP</span>
+      <span class="result-rarity-pill" [class]="q.rarity">{{ q.rarity }}</span>
     </div>
   </div>
 

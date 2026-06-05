@@ -15,6 +15,7 @@
     </div>
 
     <div class="cards"
+         [class]="'cards--' + col.id"
          cdkDropList
          [id]="'col-' + col.id"
          [cdkDropListData]="questsIn(col.id)"
@@ -33,7 +34,8 @@
       </qj-card>
 
       <div class="slot" *ngIf="questsIn(col.id).length === 0">
-        drop here
+        <lucide-angular name="plus" [size]="16" [strokeWidth]="1.75" class="slot-icon"></lucide-angular>
+        <span>drop or add a task</span>
       </div>
     </div>
   </section>
