@@ -27,7 +27,10 @@ export const appConfig: ApplicationConfig = {
       Check, CircleCheck, CircleDashed, Loader, Target, RotateCcw, Plus,
       Download, Upload
     })), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
+            // Enabled for the web/PWA build, but NOT inside the Tauri desktop
+            // shell (it's a local app — SW caching is unnecessary and the
+            // custom protocol can trip it up).
+            enabled: !isDevMode() && !(globalThis as any).__TAURI_INTERNALS__,
             registrationStrategy: 'registerWhenStable:30000'
           }),
   ]

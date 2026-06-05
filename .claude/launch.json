@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start", "--prefix", "tasktracker"],
       "port": 4200
+    },
+    {
+      "name": "pwa-prod",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["http-server", "tasktracker/dist/tasktracker/browser", "-p", "4300", "-c-1"],
+      "port": 4300
     }
   ]
 }

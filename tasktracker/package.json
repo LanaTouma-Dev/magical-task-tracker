@@ -7,7 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "pwa": "ng build && npx http-server dist/tasktracker/browser -p 4200 -c-1"
+    "pwa": "ng build && npx http-server dist/tasktracker/browser -p 4200 -c-1",
+    "tauri": "tauri",
+    "app:dev": "tauri dev",
+    "app:build": "tauri build"
   },
   "private": true,
   "dependencies": {
@@ -31,6 +34,7 @@
     "@angular-devkit/build-angular": "^18.2.20",
     "@angular/cli": "^18.2.20",
     "@angular/compiler-cli": "^18.2.0",
+    "@tauri-apps/cli": "^2.11.2",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
