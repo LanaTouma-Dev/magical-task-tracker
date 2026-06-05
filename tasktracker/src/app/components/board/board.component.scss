@@ -35,7 +35,9 @@
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  gap: 18px;
+  height: 100%;
+  min-height: 0;
 }
 
 .column {
@@ -44,8 +46,8 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 24px;
-  padding: 22px 18px;
-  min-height: 520px;
+  padding: 18px 16px;
+  min-height: 0;
   box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
@@ -56,9 +58,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 16px;
-  padding: 0 6px 14px;
+  margin-bottom: 12px;
+  padding: 0 6px 10px;
   border-bottom: 1px dashed rgba(184, 51, 106, 0.25);
+  flex: none;
 }
 .col-title {
   font-family: var(--display);
@@ -86,9 +89,21 @@
 .cards {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  min-height: 100px;
+  gap: 12px;
+  min-height: 60px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* breathing room so card hover-lift/shadow isn't clipped by the scroll edges */
+  padding: 4px 6px 4px 4px;
 }
+/* slim, on-theme scrollbar */
+.cards::-webkit-scrollbar { width: 7px; }
+.cards::-webkit-scrollbar-thumb {
+  background: rgba(184, 51, 106, 0.25);
+  border-radius: 999px;
+}
+.cards::-webkit-scrollbar-thumb:hover { background: rgba(184, 51, 106, 0.4); }
 
 .slot {
   border: 2px dashed rgba(184, 51, 106, 0.25);

@@ -7,8 +7,20 @@
 .app {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 32px 60px;
+  padding: 18px 28px 16px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* page never scrolls — the board columns scroll internally */
 }
+
+/* board fills the leftover height; its columns handle their own overflow */
+qj-board {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+qj-search { display: block; flex: none; }
 
 /* sparkle positioning */
 .sparkle.s1 {
@@ -59,8 +71,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 36px;
+  margin-bottom: 16px;
   gap: 24px;
+  flex: none;
 }
 .brand {
   display: flex;
@@ -68,8 +81,8 @@
   gap: 14px;
 }
 .brand-mark {
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: conic-gradient(
     from 180deg,
@@ -83,12 +96,12 @@
     inset 0 0 0 3px var(--mist);
   display: grid;
   place-items: center;
-  font-size: 26px;
+  font-size: 21px;
   animation: spin 18s linear infinite;
 }
 .brand-text h1 {
   font-family: var(--display);
-  font-size: 38px;
+  font-size: 30px;
   line-height: 1;
   color: var(--berry);
   letter-spacing: -0.02em;
@@ -104,76 +117,55 @@
 .player {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 12px 22px;
+  padding: 8px 20px;
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 999px;
   box-shadow: var(--shadow-soft);
+  min-width: 240px;
+  transition: box-shadow 0.4s, border-color 0.4s;
 }
-.level-badge {
-  font-family: var(--display);
-  font-size: 20px;
-  color: var(--berry);
-  background: linear-gradient(135deg, #fff, var(--mist));
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  box-shadow:
-    0 4px 12px -4px var(--wisteria),
-    inset 0 0 0 2px var(--wisteria);
+.player.all-done {
+  border-color: rgba(184, 51, 106, 0.45);
+  box-shadow: var(--shadow-soft), 0 0 18px -4px rgba(184,51,106,0.35);
 }
-.xp-wrap {
-  min-width: 220px;
-}
-.xp-labels {
+.task-progress-wrap { width: 100%; }
+.task-progress-labels {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--ink-soft);
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
-.xp-bar {
+.task-progress-sep { opacity: 0.4; margin: 0 1px; }
+.task-progress-celebrate {
+  font-family: var(--display);
+  font-size: 12px;
+  color: var(--berry);
+  letter-spacing: 0.05em;
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.task-bar {
   height: 8px;
-  background: rgba(172, 172, 222, 0.3);
+  background: rgba(172, 172, 222, 0.25);
   border-radius: 999px;
   overflow: hidden;
-  position: relative;
 }
-.xp-fill {
+.task-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--berry), var(--wisteria), var(--icy));
+  background: linear-gradient(90deg, var(--berry), var(--wisteria));
   background-size: 200% 100%;
   border-radius: 999px;
-  animation: shimmer 3s linear infinite;
-  position: relative;
-  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.xp-fill::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.6),
-    transparent
-  );
-  animation: sweep 2s ease-in-out infinite;
-}
-.streak {
-  font-family: var(--display);
-  font-size: 18px;
-  color: var(--berry);
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.player.all-done .task-fill {
+  background: linear-gradient(90deg, var(--berry), var(--wisteria), var(--icy));
+  background-size: 200% 100%;
+  animation: shimmer 2.5s linear infinite;
 }
 
 /* ─── TEMPLATES ROW ─── */
@@ -182,6 +174,21 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
+  flex: none;
+}
+
+.archive-toggle-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 12px; padding: 7px 14px;
+  border-radius: 999px; cursor: pointer; color: var(--ink-soft);
+  background: rgba(255,255,255,0.45); border: 1px solid rgba(172,172,222,0.35);
+  transition: background 0.18s, color 0.18s, transform 0.18s;
+}
+.archive-toggle-btn:hover { transform: translateY(-1px); color: var(--berry); }
+.archive-badge {
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  background: var(--berry); color: #fff; border-radius: 999px;
+  padding: 0 6px; min-width: 18px; text-align: center; line-height: 18px;
 }
 
 .focus-btn {
@@ -212,12 +219,13 @@
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 20px;
-  padding: 18px 22px;
+  border-radius: 18px;
+  padding: 11px 18px;
   box-shadow: var(--shadow-soft);
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   position: relative;
   overflow: hidden;
+  flex: none;
 }
 .summon::before {
   content: "";
@@ -321,7 +329,8 @@
 .legend {
   display: flex;
   gap: 18px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+  flex: none;
   font-family: var(--mono);
   font-size: 11px;
   color: var(--ink-soft);
@@ -362,11 +371,12 @@
 
 /* ─── FOOTER ─── */
 .footer {
-  margin-top: 30px;
+  margin-top: 12px;
+  flex: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 22px;
+  padding: 9px 18px;
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.5);

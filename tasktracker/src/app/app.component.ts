@@ -3,19 +3,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { BoardComponent } from './components/board/board.component';
+import { ArchiveComponent } from './components/archive/archive.component';
 import { SpellSheetComponent } from './components/spell-sheet/spell-sheet.component';
 import { EditQuestComponent } from './components/edit-quest/edit-quest.component';
 import { TemplatesComponent } from './components/templates/templates.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { Quest } from './models/quest';
-import { QuestStore, xpForLevel } from './services/quest-store.service';
+import { QuestStore } from './services/quest-store.service';
 import { ParserService } from './services/parser.service';
 import { NotificationService } from './services/notification.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule, BoardComponent, SpellSheetComponent, EditQuestComponent, TemplatesComponent, SearchBarComponent],
+  imports: [CommonModule, FormsModule, LucideAngularModule, BoardComponent, SpellSheetComponent, EditQuestComponent, TemplatesComponent, SearchBarComponent, ArchiveComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -26,11 +27,14 @@ export class AppComponent {
 
   constructor() { this.notifs.init(); }
 
-  readonly stats = this.store.stats;
-  readonly focusToday = this.store.focusToday;
+  readonly stats       = this.store.stats;
+  readonly focusToday  = this.store.focusToday;
+  readonly showArchive = this.store.showArchive;
+  readonly archivedCount = this.store.archivedQuests;
   readonly input = signal('');
 
-  toggleFocus() { this.store.toggleFocusToday(); }
+  toggleFocus()   { this.store.toggleFocusToday(); }
+  toggleArchive() { this.store.toggleArchiveView(); }
 
   exportTasks() {
     const blob = new Blob([this.store.exportData()], { type: 'application/json' });
@@ -57,8 +61,9 @@ export class AppComponent {
 
   readonly parsed = computed(() => this.parser.parse(this.input()));
 
-  readonly xpNeeded = computed(() => xpForLevel(this.stats().level));
-  readonly xpPct = computed(() => Math.round((this.stats().xp / this.xpNeeded()) * 100));
+  readonly taskTotal = computed(() => this.store.liveQuests().length);
+  readonly taskDone  = computed(() => this.store.liveQuests().filter(q => q.column === 'defeated').length);
+  readonly taskPct   = computed(() => this.taskTotal() === 0 ? 0 : Math.round((this.taskDone() / this.taskTotal()) * 100));
 
   readonly sparkles = ['✦','✧','✦','✧','⋆','✦','✧'];
   editingQuest = signal<Quest | null>(null);

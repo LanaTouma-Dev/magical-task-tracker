@@ -25,7 +25,7 @@ export class BoardComponent {
     const focus = this.store.focusToday();
     const map = new Map<ColumnId, Quest[]>();
     for (const col of this.columns) map.set(col.id, []);
-    for (const q of this.store.quests()) {
+    for (const q of this.store.liveQuests()) {
       if (focus) {
         const u = getUrgency(q.dueDate, q.column === 'defeated');
         if (u !== 'urgent' && u !== 'overdue') continue;

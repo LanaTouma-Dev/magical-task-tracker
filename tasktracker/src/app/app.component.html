@@ -10,21 +10,28 @@
       </div>
     </div>
 
-    <div class="player">
-      <div class="level-badge">{{ stats().level }}</div>
-      <div class="xp-wrap">
-        <div class="xp-labels">
-          <span>Level {{ stats().level }}</span>
-          <span>{{ stats().xp }} / {{ xpNeeded() }} XP</span>
+    <div class="player" [class.all-done]="taskPct() === 100">
+      <div class="task-progress-wrap">
+        <div class="task-progress-labels">
+          <span class="task-progress-text">
+            {{ taskDone() }}<span class="task-progress-sep">/</span>{{ taskTotal() }} tasks done
+          </span>
+          <span class="task-progress-celebrate" *ngIf="taskPct() === 100">✦ all done ✦</span>
         </div>
-        <div class="xp-bar"><div class="xp-fill" [style.width.%]="xpPct()"></div></div>
+        <div class="task-bar">
+          <div class="task-fill" [style.width.%]="taskPct()"></div>
+        </div>
       </div>
-      <div class="streak" title="daily streak">🔥 {{ stats().streak }}</div>
     </div>
   </header>
 
   <div class="summon-row">
     <qj-templates (spawn)="spawnFromTemplate($event)"></qj-templates>
+    <button class="archive-toggle-btn" (click)="toggleArchive()">
+      <lucide-angular name="archive" [size]="14" [strokeWidth]="1.75"></lucide-angular>
+      Archive
+      <span class="archive-badge" *ngIf="archivedCount().length">{{ archivedCount().length }}</span>
+    </button>
     <button class="focus-btn" [class.active]="focusToday()" (click)="toggleFocus()"
             [title]="focusToday() ? 'Show all tasks' : 'Show only what is due today or overdue'">
       <lucide-angular name="target" [size]="14" [strokeWidth]="1.75"></lucide-angular>
@@ -64,6 +71,7 @@
   <qj-board (editQuest)="openEdit($event)"></qj-board>
 
   <qj-edit-quest [quest]="editingQuest()" (closed)="closeEdit()"></qj-edit-quest>
+  <app-archive *ngIf="showArchive()"></app-archive>
 
   <div class="footer">
     <div class="shortcuts">
@@ -81,7 +89,6 @@
         Import
       </button>
       <input #importInput type="file" accept="application/json,.json" hidden (change)="importTasks($event)" />
-      <span>streak: {{ stats().streak }} days</span>
     </div>
   </div>
 </div>

@@ -1,8 +1,9 @@
-import { Quest, PlayerStats } from '../models/quest';
+import { Quest, PlayerStats, AppSettings } from '../models/quest';
 
 export interface PersistShape {
   quests: Quest[];
   stats: PlayerStats;
+  settings?: AppSettings;
 }
 
 export interface TaskPersistence {

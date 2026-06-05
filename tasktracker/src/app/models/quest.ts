@@ -14,12 +14,14 @@ export interface Quest {
   rarity: Rarity;
   column: ColumnId;
   tags: string[];
-  dueDate?: string;       // ISO date or relative token ("fri", "mon", "3d")
-  avatar?: string;        // emoji
+  dueDate?: string;
+  avatar?: string;
   subtasks?: Subtask[];
   xp: number;
   createdAt: string;
   completedAt?: string;
+  archived?: boolean;
+  archivedAt?: string;
 }
 
 export interface PlayerStats {
@@ -27,6 +29,10 @@ export interface PlayerStats {
   xp: number;
   streak: number;
   lastActiveDate: string;
+}
+
+export interface AppSettings {
+  autoArchiveDays: number; // 0 = disabled
 }
 
 export const RARITY_XP: Record<Rarity, number> = {

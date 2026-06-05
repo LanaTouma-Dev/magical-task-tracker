@@ -1,10 +1,12 @@
-import { Injectable, signal } from '@angular/core';
-import { Quest, ColumnId, PlayerStats, RARITY_XP } from '../models/quest';
+import { Injectable, computed, signal } from '@angular/core';
+import { Quest, ColumnId, PlayerStats, RARITY_XP, AppSettings } from '../models/quest';
 import { createPersistence, PersistShape } from './persistence';
 
 export function xpForLevel(level: number): number {
   return 100 + level * 50;
 }
+
+const DEFAULT_SETTINGS: AppSettings = { autoArchiveDays: 7 };
 
 function pickAvatar(rarity: string, tags: string[]): string {
   if (tags.includes('bug'))      return '🛠️';
@@ -24,32 +26,42 @@ function newId(): string {
 }
 
 function todayStr(): string {
-  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  return new Date().toISOString().slice(0, 10);
 }
 
 @Injectable({ providedIn: 'root' })
 export class QuestStore {
-  private readonly _quests = signal<Quest[]>([]);
-  private readonly _stats  = signal<PlayerStats>({ level: 1, xp: 0, streak: 0, lastActiveDate: '' });
-  private readonly _loading = signal(true);
+  private readonly _quests   = signal<Quest[]>([]);
+  private readonly _stats    = signal<PlayerStats>({ level: 1, xp: 0, streak: 0, lastActiveDate: '' });
+  private readonly _settings = signal<AppSettings>({ ...DEFAULT_SETTINGS });
+  private readonly _loading  = signal(true);
+  private readonly _focusToday   = signal(false);
+  private readonly _showArchive  = signal(false);
 
-  private readonly _focusToday = signal(false);
+  readonly quests      = this._quests.asReadonly();
+  readonly stats       = this._stats.asReadonly();
+  readonly settings    = this._settings.asReadonly();
+  readonly loading     = this._loading.asReadonly();
+  readonly focusToday  = this._focusToday.asReadonly();
+  readonly showArchive = this._showArchive.asReadonly();
 
-  readonly quests     = this._quests.asReadonly();
-  readonly stats      = this._stats.asReadonly();
-  readonly loading    = this._loading.asReadonly();
-  readonly focusToday = this._focusToday.asReadonly();
+  /** Live tasks visible on the board (not archived). */
+  readonly liveQuests = computed(() => this._quests().filter(q => !q.archived));
+  /** Archived tasks, newest first. */
+  readonly archivedQuests = computed(() =>
+    this._quests().filter(q => q.archived).sort((a, b) =>
+      (b.archivedAt ?? '').localeCompare(a.archivedAt ?? '')
+    )
+  );
 
-  toggleFocusToday() { this._focusToday.update(v => !v); }
+  toggleFocusToday()  { this._focusToday.update(v => !v); }
+  toggleArchiveView() { this._showArchive.update(v => !v); }
 
   private readonly persistence = createPersistence();
-  /** Serializes writes so overlapping saves can't race each other. */
   private saveChain: Promise<void> = Promise.resolve();
 
   constructor() {
     this.load();
-    // In the browser PWA, ask to keep data safe from eviction. (No-op in Tauri,
-    // where SQLite lives on disk and isn't subject to browser storage clearing.)
     navigator.storage?.persist?.().catch(() => {});
   }
 
@@ -61,43 +73,65 @@ export class QuestStore {
       const data = await this.persistence.load();
       if (data) {
         this._quests.set(data.quests ?? []);
-        if (data.stats) this._stats.set(data.stats);
+        if (data.stats)    this._stats.set(data.stats);
+        if (data.settings) this._settings.set({ ...DEFAULT_SETTINGS, ...data.settings });
       }
-    } catch {
-      /* unreadable store — start fresh rather than crash */
-    }
+    } catch { /* start fresh */ }
     this._loading.set(false);
+    this.runAutoArchive();
   }
 
   private persist() {
-    const snapshot = { quests: this._quests(), stats: this._stats() };
+    const snapshot: PersistShape = {
+      quests: this._quests(),
+      stats: this._stats(),
+      settings: this._settings(),
+    };
     this.saveChain = this.saveChain
       .catch(() => {})
       .then(() => this.persistence.save(snapshot))
-      .catch(() => { /* keep running in-memory if a write fails */ });
+      .catch(() => {});
   }
 
-  /** Award XP, handle level-ups and the daily streak. Mirrors the old backend logic. */
   private awardXp(amount: number) {
     this._stats.update(s => {
       let { level, xp, streak } = s;
       const last = s.lastActiveDate;
       xp += amount;
-      while (xp >= xpForLevel(level)) {
-        xp -= xpForLevel(level);
-        level += 1;
-      }
+      while (xp >= xpForLevel(level)) { xp -= xpForLevel(level); level++; }
       const today = todayStr();
       if (last) {
         const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
-        if (last === yesterday) streak += 1;
-        else if (last < today)  streak = 1; // gap of 2+ days (or any past day that isn't yesterday)
-        // last === today → unchanged
-      } else {
-        streak = 1;
-      }
+        if (last === yesterday) streak++;
+        else if (last < today)  streak = 1;
+      } else { streak = 1; }
       return { level, xp, streak, lastActiveDate: today };
     });
+  }
+
+  /* ─── auto-archive ─── */
+
+  private runAutoArchive() {
+    const days = this._settings().autoArchiveDays;
+    if (!days) return;
+    const cutoff = new Date(Date.now() - days * 86_400_000).toISOString();
+    let changed = false;
+    this._quests.update(list => list.map(q => {
+      if (!q.archived && q.column === 'defeated' && q.completedAt && q.completedAt < cutoff) {
+        changed = true;
+        return { ...q, archived: true, archivedAt: new Date().toISOString() };
+      }
+      return q;
+    }));
+    if (changed) this.persist();
+  }
+
+  /* ─── settings ─── */
+
+  updateSettings(patch: Partial<AppSettings>) {
+    this._settings.update(s => ({ ...s, ...patch }));
+    this.persist();
+    this.runAutoArchive();
   }
 
   /* ─── mutations ─── */
@@ -123,23 +157,20 @@ export class QuestStore {
   move(id: string, to: ColumnId) {
     const quest = this._quests().find(q => q.id === id);
     if (!quest) return;
-    const wasDefeated = quest.column === 'defeated';
     const nowDefeated = to === 'defeated';
-
     this._quests.update(list =>
       list.map(q => q.id === id
         ? { ...q, column: to, completedAt: nowDefeated ? new Date().toISOString() : undefined }
         : q)
     );
-
-    if (!wasDefeated && nowDefeated) this.awardXp(quest.xp);
+    if (!quest.archived && quest.column !== 'defeated' && nowDefeated) this.awardXp(quest.xp);
     this.persist();
   }
 
   reorder(column: ColumnId, fromIndex: number, toIndex: number) {
     this._quests.update(list => {
-      const col    = list.filter(q => q.column === column);
-      const others = list.filter(q => q.column !== column);
+      const col    = list.filter(q => q.column === column && !q.archived);
+      const others = list.filter(q => q.column !== column || q.archived);
       const [moved] = col.splice(fromIndex, 1);
       col.splice(toIndex, 0, moved);
       return [...others, ...col];
@@ -155,14 +186,12 @@ export class QuestStore {
   update(id: string, changes: Partial<Quest>) {
     const patch: Partial<Quest> = { ...changes };
     if (changes.rarity !== undefined) patch.xp = RARITY_XP[changes.rarity];
-    this._quests.update(list =>
-      list.map(q => q.id === id ? { ...q, ...patch } : q)
-    );
+    this._quests.update(list => list.map(q => q.id === id ? { ...q, ...patch } : q));
     this.persist();
   }
 
   cloneLast() {
-    const last = this._quests()[0];
+    const last = this.liveQuests()[0];
     if (!last) return;
     this.add({
       title: last.title + ' (clone)',
@@ -175,10 +204,36 @@ export class QuestStore {
     });
   }
 
+  /* ─── archive actions ─── */
+
+  archiveTask(id: string) {
+    this._quests.update(list =>
+      list.map(q => q.id === id ? { ...q, archived: true, archivedAt: new Date().toISOString() } : q)
+    );
+    this.persist();
+  }
+
+  restoreTask(id: string) {
+    this._quests.update(list =>
+      list.map(q => q.id === id ? { ...q, archived: false, archivedAt: undefined, column: 'backlog' as ColumnId } : q)
+    );
+    this.persist();
+  }
+
+  deleteForever(id: string) {
+    this._quests.update(list => list.filter(q => q.id !== id));
+    this.persist();
+  }
+
+  clearArchive() {
+    this._quests.update(list => list.filter(q => !q.archived));
+    this.persist();
+  }
+
   /* ─── backup / restore ─── */
 
   exportData(): string {
-    return JSON.stringify({ quests: this._quests(), stats: this._stats() }, null, 2);
+    return JSON.stringify({ quests: this._quests(), stats: this._stats(), settings: this._settings() }, null, 2);
   }
 
   importData(json: string): boolean {
@@ -186,11 +241,10 @@ export class QuestStore {
       const data = JSON.parse(json) as PersistShape;
       if (!Array.isArray(data.quests)) return false;
       this._quests.set(data.quests);
-      if (data.stats) this._stats.set(data.stats);
+      if (data.stats)    this._stats.set(data.stats);
+      if (data.settings) this._settings.set({ ...DEFAULT_SETTINGS, ...data.settings });
       this.persist();
       return true;
-    } catch {
-      return false;
-    }
+    } catch { return false; }
   }
 }
