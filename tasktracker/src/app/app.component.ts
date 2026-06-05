@@ -32,6 +32,29 @@ export class AppComponent {
 
   toggleFocus() { this.store.toggleFocusToday(); }
 
+  exportTasks() {
+    const blob = new Blob([this.store.exportData()], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tasks-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  importTasks(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const ok = this.store.importData(String(reader.result));
+      if (!ok) alert('Could not import that file — it does not look like a tasks backup.');
+      input.value = '';
+    };
+    reader.readAsText(file);
+  }
+
   readonly parsed = computed(() => this.parser.parse(this.input()));
 
   readonly xpNeeded = computed(() => xpForLevel(this.stats().level));

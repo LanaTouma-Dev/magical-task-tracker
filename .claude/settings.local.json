@@ -10,7 +10,8 @@
       "Bash(npm install *)",
       "mcp__Claude_Preview__preview_start",
       "Bash(cd /c/Games/magical-task-tracker/tasktracker && grep -oE \"^\\(export \\\\{ default as \\)?\\(Check|CheckCircle|CircleCheck|CircleCheckBig|CircleDashed|Loader|LoaderCircle|Target|RotateCcw|Plus\\)\\\\b\" node_modules/lucide-angular/dist/lucide-angular.d.ts 2>/dev/null | sort -u; echo \"---names---\"; grep -oE \"\\\\b\\(Check|CheckCircle|CircleCheck|CircleDashed|Loader|Target|RotateCcw|Plus\\)\\\\b\" node_modules/lucide-angular/dist/icons/index.d.ts 2>/dev/null | sort -u | head -40)",
-      "Bash(node -e \"const fs=require\\('fs'\\); const f=require\\('lucide-angular/package.json'\\); console.log\\(f.module, f.main, f.typings||f.types\\)\")"
+      "Bash(node -e \"const fs=require\\('fs'\\); const f=require\\('lucide-angular/package.json'\\); console.log\\(f.module, f.main, f.typings||f.types\\)\")",
+      "Bash(cd /c/Games/magical-task-tracker/tasktracker/dist/tasktracker && find . -maxdepth 2 -name \"ngsw-worker.js\" -o -maxdepth 2 -name \"index.html\" -o -maxdepth 2 -name \"ngsw.json\" | sort; echo \"---top level---\"; ls)"
     ]
   }
 }

@@ -7,7 +7,8 @@ import {
   FlaskConical, SlidersHorizontal, Skull, Flame,
   Zap, Sparkles, WandSparkles, Star, BookOpen,
   ClipboardList, ShieldCheck, CircleX,
-  Check, CircleCheck, CircleDashed, Loader, Target, RotateCcw, Plus
+  Check, CircleCheck, CircleDashed, Loader, Target, RotateCcw, Plus,
+  Download, Upload
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -23,7 +24,8 @@ export const appConfig: ApplicationConfig = {
       FlaskConical, SlidersHorizontal, Skull, Flame,
       Zap, Sparkles, WandSparkles, Star, BookOpen,
       ClipboardList, ShieldCheck, CircleX,
-      Check, CircleCheck, CircleDashed, Loader, Target, RotateCcw, Plus
+      Check, CircleCheck, CircleDashed, Loader, Target, RotateCcw, Plus,
+      Download, Upload
     })), provideServiceWorker('ngsw-worker.js', {
             enabled: !isDevMode(),
             registrationStrategy: 'registerWhenStable:30000'

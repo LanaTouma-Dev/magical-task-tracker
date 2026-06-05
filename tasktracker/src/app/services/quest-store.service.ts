@@ -1,9 +1,15 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Quest, ColumnId, PlayerStats, RARITY_XP } from '../models/quest';
-import { QuestApiService, ApiPlayerStats } from './quest-api.service';
 
 export function xpForLevel(level: number): number {
   return 100 + level * 50;
+}
+
+const STORAGE_KEY = 'quest-journal.data.v1';
+
+interface PersistShape {
+  quests: Quest[];
+  stats: PlayerStats;
 }
 
 function pickAvatar(rarity: string, tags: string[]): string {
@@ -19,41 +25,16 @@ function pickAvatar(rarity: string, tags: string[]): string {
   return '🌸';
 }
 
-function toClientQuest(raw: any): Quest {
-  return {
-    id: String(raw.id),
-    title: raw.title,
-    notes: raw.notes || undefined,
-    rarity: raw.rarity,
-    column: raw.column,
-    tags: raw.tags ?? [],
-    dueDate: raw.due_date || undefined,
-    avatar: raw.avatar || undefined,
-    subtasks: raw.subtasks ?? [],
-    xp: raw.xp,
-    createdAt: raw.created_at,
-    completedAt: raw.completed_at ?? undefined,
-  };
+function newId(): string {
+  return (crypto as any)?.randomUUID?.() ?? Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
 
-function toApiQuest(q: Partial<Quest> & { title: string }): Record<string, any> {
-  return {
-    title: q.title,
-    notes: q.notes ?? '',
-    rarity: q.rarity ?? 'common',
-    column: q.column ?? 'backlog',
-    tags: q.tags ?? [],
-    subtasks: q.subtasks ?? [],
-    due_date: q.dueDate ?? '',
-    avatar: q.avatar ?? pickAvatar(q.rarity ?? 'common', q.tags ?? []),
-    xp: RARITY_XP[q.rarity ?? 'common'],
-  };
+function todayStr(): string {
+  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 }
 
 @Injectable({ providedIn: 'root' })
 export class QuestStore {
-  private api = inject(QuestApiService);
-
   private readonly _quests = signal<Quest[]>([]);
   private readonly _stats  = signal<PlayerStats>({ level: 1, xp: 0, streak: 0, lastActiveDate: '' });
   private readonly _loading = signal(true);
@@ -68,59 +49,97 @@ export class QuestStore {
   toggleFocusToday() { this._focusToday.update(v => !v); }
 
   constructor() {
-    this.loadAll();
+    this.load();
+    // Ask the browser to keep our data safe from eviction under disk pressure.
+    navigator.storage?.persist?.().catch(() => {});
   }
 
-  private loadAll() {
+  /* ─── persistence ─── */
+
+  private load() {
     this._loading.set(true);
-    this.api.getQuests().subscribe({
-      next: (raw: any[]) => {
-        this._quests.set(raw.map(toClientQuest));
-        this._loading.set(false);
-      },
-      error: () => this._loading.set(false),
-    });
-    this.api.getStats().subscribe({
-      next: (s: ApiPlayerStats) => this._stats.set({
-        level: s.level,
-        xp: s.xp,
-        streak: s.streak,
-        lastActiveDate: s.last_active_date ?? '',
-      }),
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const data = JSON.parse(raw) as PersistShape;
+        this._quests.set(data.quests ?? []);
+        if (data.stats) this._stats.set(data.stats);
+      }
+    } catch {
+      /* corrupt data — start fresh rather than crash */
+    }
+    this._loading.set(false);
+  }
+
+  private persist() {
+    const data: PersistShape = { quests: this._quests(), stats: this._stats() };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch {
+      /* storage full / unavailable — keep running in-memory */
+    }
+  }
+
+  /** Award XP, handle level-ups and the daily streak. Mirrors the old backend logic. */
+  private awardXp(amount: number) {
+    this._stats.update(s => {
+      let { level, xp, streak } = s;
+      const last = s.lastActiveDate;
+      xp += amount;
+      while (xp >= xpForLevel(level)) {
+        xp -= xpForLevel(level);
+        level += 1;
+      }
+      const today = todayStr();
+      if (last) {
+        const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+        if (last === yesterday) streak += 1;
+        else if (last < today)  streak = 1; // gap of 2+ days (or any past day that isn't yesterday)
+        // last === today → unchanged
+      } else {
+        streak = 1;
+      }
+      return { level, xp, streak, lastActiveDate: today };
     });
   }
 
   /* ─── mutations ─── */
 
   add(partial: Partial<Quest> & { title: string }) {
-    this.api.createQuest(toApiQuest(partial) as any).subscribe((raw: any) => {
-      this._quests.update(list => [toClientQuest(raw), ...list]);
-    });
+    const quest: Quest = {
+      id: newId(),
+      title: partial.title,
+      notes: partial.notes || undefined,
+      rarity: partial.rarity ?? 'common',
+      column: partial.column ?? 'backlog',
+      tags: partial.tags ?? [],
+      dueDate: partial.dueDate || undefined,
+      avatar: partial.avatar ?? pickAvatar(partial.rarity ?? 'common', partial.tags ?? []),
+      subtasks: partial.subtasks ?? [],
+      xp: RARITY_XP[partial.rarity ?? 'common'],
+      createdAt: new Date().toISOString(),
+    };
+    this._quests.update(list => [quest, ...list]);
+    this.persist();
   }
 
   move(id: string, to: ColumnId) {
     const quest = this._quests().find(q => q.id === id);
     if (!quest) return;
-    // optimistic update
+    const wasDefeated = quest.column === 'defeated';
+    const nowDefeated = to === 'defeated';
+
     this._quests.update(list =>
       list.map(q => q.id === id
-        ? { ...q, column: to, completedAt: to === 'defeated' ? new Date().toISOString() : undefined }
+        ? { ...q, column: to, completedAt: nowDefeated ? new Date().toISOString() : undefined }
         : q)
     );
-    this.api.updateQuest(id, { column: to } as any).subscribe({
-      next: (raw: any) => {
-        // if XP was awarded server-side, refresh stats
-        if (to === 'defeated') this.refreshStats();
-        this._quests.update(list =>
-          list.map(q => q.id === id ? toClientQuest(raw) : q)
-        );
-      },
-      error: () => this.loadAll(), // rollback on error
-    });
+
+    if (!wasDefeated && nowDefeated) this.awardXp(quest.xp);
+    this.persist();
   }
 
   reorder(column: ColumnId, fromIndex: number, toIndex: number) {
-    // optimistic local reorder
     this._quests.update(list => {
       const col    = list.filter(q => q.column === column);
       const others = list.filter(q => q.column !== column);
@@ -128,51 +147,53 @@ export class QuestStore {
       col.splice(toIndex, 0, moved);
       return [...others, ...col];
     });
-    const ids = this._quests().filter(q => q.column === column).map(q => q.id);
-    this.api.reorderColumn(column, ids).subscribe();
+    this.persist();
   }
 
   remove(id: string) {
     this._quests.update(list => list.filter(q => q.id !== id));
-    this.api.deleteQuest(id).subscribe({
-      error: () => this.loadAll(),
-    });
+    this.persist();
   }
 
   update(id: string, changes: Partial<Quest>) {
-    const apiChanges: Record<string, any> = {};
-    if (changes.title   !== undefined) apiChanges['title']    = changes.title;
-    if (changes.notes   !== undefined) apiChanges['notes']    = changes.notes ?? '';
-    if (changes.rarity  !== undefined) { apiChanges['rarity'] = changes.rarity; apiChanges['xp'] = RARITY_XP[changes.rarity]; }
-    if (changes.tags    !== undefined) apiChanges['tags']     = changes.tags;
-    if (changes.subtasks!== undefined) apiChanges['subtasks'] = changes.subtasks;
-    if (changes.dueDate !== undefined) apiChanges['due_date'] = changes.dueDate ?? '';
-
+    const patch: Partial<Quest> = { ...changes };
+    if (changes.rarity !== undefined) patch.xp = RARITY_XP[changes.rarity];
     this._quests.update(list =>
-      list.map(q => q.id === id ? { ...q, ...changes } : q)
+      list.map(q => q.id === id ? { ...q, ...patch } : q)
     );
-    this.api.updateQuest(id, apiChanges as any).subscribe({
-      next: (raw: any) => this._quests.update(list => list.map(q => q.id === id ? toClientQuest(raw) : q)),
-      error: () => this.loadAll(),
-    });
+    this.persist();
   }
 
   cloneLast() {
     const last = this._quests()[0];
     if (!last) return;
-    this.api.cloneQuest(last.id).subscribe((raw: any) => {
-      this._quests.update(list => [toClientQuest(raw), ...list]);
+    this.add({
+      title: last.title + ' (clone)',
+      notes: last.notes,
+      rarity: last.rarity,
+      tags: [...last.tags],
+      dueDate: last.dueDate,
+      avatar: last.avatar,
+      subtasks: (last.subtasks ?? []).map(s => ({ ...s, done: false })),
     });
   }
 
-  private refreshStats() {
-    this.api.getStats().subscribe((s: ApiPlayerStats) =>
-      this._stats.set({
-        level: s.level,
-        xp: s.xp,
-        streak: s.streak,
-        lastActiveDate: s.last_active_date ?? '',
-      })
-    );
+  /* ─── backup / restore ─── */
+
+  exportData(): string {
+    return JSON.stringify({ quests: this._quests(), stats: this._stats() }, null, 2);
+  }
+
+  importData(json: string): boolean {
+    try {
+      const data = JSON.parse(json) as PersistShape;
+      if (!Array.isArray(data.quests)) return false;
+      this._quests.set(data.quests);
+      if (data.stats) this._stats.set(data.stats);
+      this.persist();
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

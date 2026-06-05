@@ -1,3 +1,13 @@
+/**
+ * Django REST backend client — PARKED, not currently wired up.
+ *
+ * As of the local-storage switch, QuestStore persists everything to the
+ * browser (localStorage) and this service is intentionally unused. It is kept
+ * intact so the Django backend (tasktrackerbackend/) can be re-enabled later
+ * (e.g. for multi-device sync) by pointing QuestStore back at it.
+ *
+ * Nothing imports this service today, so it is tree-shaken out of the bundle.
+ */
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';

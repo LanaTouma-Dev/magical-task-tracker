@@ -34,11 +34,13 @@ python manage.py createsuperuser # for /admin
 
 ### Frontend (Angular 18, standalone components + signals)
 
-**State management** lives entirely in `tasktracker/src/app/services/quest-store.service.ts`. It uses Angular `signal()` / `computed()` primitives (no RxJS subjects). Optimistic updates: UI updates immediately, then syncs to the server; on error, reloads fresh data.
+**Persistence: local-first.** `quest-store.service.ts` persists all state to the browser (`localStorage`, key `quest-journal.data.v1`) and owns the XP/level/streak logic client-side. The app ships as an installable PWA (`npm run pwa`) and runs fully offline with no server. Backup via the Export/Import buttons. **The Django backend is parked, not wired up** — see "Backend" below.
+
+**State management** lives entirely in `tasktracker/src/app/services/quest-store.service.ts`. It uses Angular `signal()` / `computed()` primitives (no RxJS subjects).
 
 **Key services:**
-- `quest-store.service.ts` — central state: `quests`, `stats`, `loading` signals; methods `add()`, `move()`, `reorder()`, `update()`, `remove()`, `cloneLast()`
-- `quest-api.service.ts` — thin HttpClient wrapper, base URL `http://localhost:8000/api`
+- `quest-store.service.ts` — central state: `quests`, `stats`, `loading`, `focusToday` signals; methods `add()`, `move()`, `reorder()`, `update()`, `remove()`, `cloneLast()`, `exportData()`, `importData()`
+- `quest-api.service.ts` — **PARKED** thin HttpClient wrapper (base URL `http://localhost:8000/api`). Currently unused/tree-shaken; retained so the backend can be re-enabled for sync later.
 - `parser.service.ts` — natural language parser (input: `"fix login !high fri #work"` → `{ title, rarity, tags, dueDate }`)
 - `notification.service.ts` — browser Notification API, polls overdue quests every 30 min
 
@@ -50,7 +52,9 @@ python manage.py createsuperuser # for /admin
 
 **Component tree:** `AppComponent` (root shell, summon bar, stats topbar) → `BoardComponent` (CDK drag-drop kanban) → `QuestCardComponent`. Modals: `EditQuestComponent`, `SpellSheetComponent`, `TemplatesComponent`. No Angular Router — single page with modal overlays.
 
-### Backend (Django 5 + DRF)
+### Backend (Django 5 + DRF) — PARKED
+
+> The frontend no longer calls this backend (it went local-first / PWA). The Django code is kept intact and runnable for a future sync feature; keep models in sync with `quest.ts`. To re-enable, point `QuestStore` back at `quest-api.service.ts`.
 
 **Models** (`quests/models.py`):
 - `Quest` — `title`, `rarity`, `column` (backlog/battle/defeated), `tags` (JSONField), `due_date`, `avatar` (emoji), `xp`, `order` (int, for drag-drop persistence), `created_at`, `completed_at`

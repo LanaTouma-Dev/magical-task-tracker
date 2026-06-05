@@ -71,6 +71,17 @@
       <span><span class="kbd">Ctrl</span><span class="kbd">D</span>clone last</span>
       <span><span class="kbd">Enter</span>add</span>
     </div>
-    <div>streak: {{ stats().streak }} days</div>
+    <div class="footer-right">
+      <button class="data-btn" (click)="exportTasks()" title="Download a backup of all your tasks">
+        <lucide-angular name="download" [size]="13" [strokeWidth]="2"></lucide-angular>
+        Export
+      </button>
+      <button class="data-btn" (click)="importInput.click()" title="Restore tasks from a backup file">
+        <lucide-angular name="upload" [size]="13" [strokeWidth]="2"></lucide-angular>
+        Import
+      </button>
+      <input #importInput type="file" accept="application/json,.json" hidden (change)="importTasks($event)" />
+      <span>streak: {{ stats().streak }} days</span>
+    </div>
   </div>
 </div>
