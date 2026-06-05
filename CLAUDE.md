@@ -34,7 +34,11 @@ python manage.py createsuperuser # for /admin
 
 ### Frontend (Angular 18, standalone components + signals)
 
-**Persistence: local-first.** `quest-store.service.ts` persists all state to the browser (`localStorage`, key `quest-journal.data.v1`) and owns the XP/level/streak logic client-side. The app ships as an installable PWA (`npm run pwa`) and runs fully offline with no server. Backup via the Export/Import buttons. **The Django backend is parked, not wired up** — see "Backend" below.
+**Persistence: local-first, dual backend.** `quest-store.service.ts` owns the XP/level/streak logic client-side and persists through `persistence.ts`, which picks a backend at runtime:
+- **Tauri desktop app** → on-disk **SQLite** (`sqlite:tasks.db`) via `@tauri-apps/plugin-sql`. Tables are created by a Rust migration in `src-tauri/src/lib.rs`. Saves are wholesale rewrites (small data; `sort_order` = list position).
+- **Plain browser / PWA** → `localStorage` (key `quest-journal.data.v1`).
+
+Detection is `globalThis.__TAURI_INTERNALS__`. Saves are serialized via a promise chain in the store. Backup via the Export/Import buttons (JSON). The desktop app (`npm run app:build`) is the primary target; the PWA (`npm run pwa`) still works. **The Django backend is parked, not wired up** — see "Backend" below.
 
 **State management** lives entirely in `tasktracker/src/app/services/quest-store.service.ts`. It uses Angular `signal()` / `computed()` primitives (no RxJS subjects).
 

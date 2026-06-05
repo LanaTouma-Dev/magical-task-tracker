@@ -13,7 +13,14 @@
       "Bash(node -e \"const fs=require\\('fs'\\); const f=require\\('lucide-angular/package.json'\\); console.log\\(f.module, f.main, f.typings||f.types\\)\")",
       "Bash(cd /c/Games/magical-task-tracker/tasktracker/dist/tasktracker && find . -maxdepth 2 -name \"ngsw-worker.js\" -o -maxdepth 2 -name \"index.html\" -o -maxdepth 2 -name \"ngsw.json\" | sort; echo \"---top level---\"; ls)",
       "PowerShell($conns = Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue; if \\($conns\\) { $conns.OwningProcess | Sort-Object -Unique | ForEach-Object { Write-Output \"Killing PID $_ \\($\\(\\(Get-Process -Id $_ -ErrorAction SilentlyContinue\\).ProcessName\\)\\)\"; Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue } } else { Write-Output \"Nothing listening on port 4200\" })",
-      "PowerShell(Start-Sleep -Milliseconds 500; $c = Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { Write-Output \"Still in use by PID\\(s\\): $\\($c.OwningProcess -join ', '\\)\" } else { Write-Output \"Port 4200 is now free.\" })"
+      "PowerShell(Start-Sleep -Milliseconds 500; $c = Get-NetTCPConnection -LocalPort 4200 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { Write-Output \"Still in use by PID\\(s\\): $\\($c.OwningProcess -join ', '\\)\" } else { Write-Output \"Port 4200 is now free.\" })",
+      "Bash(cat src/lib.rs)",
+      "Bash(cat src/main.rs)",
+      "Read(//c/c/Games/magical-task-tracker/tasktracker/src-tauri/**)",
+      "Read(//c/c/Games/magical-task-tracker/tasktracker/src-tauri/capabilities/**)",
+      "Bash(grep -riE \"VALUES \\\\\\(\\\\\\\\\\\\$1|VALUES \\\\\\(\\\\?|\\\\\\\\\\\\$1, \\\\\\\\\\\\$2|sqlite.*\\\\\\\\\\\\$|placeholder\" node_modules/@tauri-apps/plugin-sql/README.md)",
+      "Bash(grep -iE \"execute|VALUES|\\\\\\\\\\\\$1|\\\\\\\\?[0-9]?\" node_modules/@tauri-apps/plugin-sql/README.md)",
+      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.cargo\\\\bin;\" + $env:Path; cd C:\\\\Games\\\\magical-task-tracker\\\\tasktracker; npm run app:build 2>&1 | Select-Object -Last 22)"
     ]
   }
 }

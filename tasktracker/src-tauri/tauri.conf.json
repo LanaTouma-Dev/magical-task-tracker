@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Tasks",
+  "productName": "Lumina",
   "version": "0.1.0",
-  "identifier": "com.questjournal.tasks",
+  "identifier": "com.lumina.app",
   "build": {
     "frontendDist": "../dist/tasktracker/browser",
     "devUrl": "http://localhost:4200",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Tasks",
+        "title": "Lumina",
         "width": 1280,
         "height": 860,
         "minWidth": 720,

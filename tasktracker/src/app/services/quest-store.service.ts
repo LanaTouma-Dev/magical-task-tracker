@@ -1,15 +1,9 @@
 import { Injectable, signal } from '@angular/core';
 import { Quest, ColumnId, PlayerStats, RARITY_XP } from '../models/quest';
+import { createPersistence, PersistShape } from './persistence';
 
 export function xpForLevel(level: number): number {
   return 100 + level * 50;
-}
-
-const STORAGE_KEY = 'quest-journal.data.v1';
-
-interface PersistShape {
-  quests: Quest[];
-  stats: PlayerStats;
 }
 
 function pickAvatar(rarity: string, tags: string[]): string {
@@ -48,36 +42,39 @@ export class QuestStore {
 
   toggleFocusToday() { this._focusToday.update(v => !v); }
 
+  private readonly persistence = createPersistence();
+  /** Serializes writes so overlapping saves can't race each other. */
+  private saveChain: Promise<void> = Promise.resolve();
+
   constructor() {
     this.load();
-    // Ask the browser to keep our data safe from eviction under disk pressure.
+    // In the browser PWA, ask to keep data safe from eviction. (No-op in Tauri,
+    // where SQLite lives on disk and isn't subject to browser storage clearing.)
     navigator.storage?.persist?.().catch(() => {});
   }
 
   /* ─── persistence ─── */
 
-  private load() {
+  private async load() {
     this._loading.set(true);
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const data = JSON.parse(raw) as PersistShape;
+      const data = await this.persistence.load();
+      if (data) {
         this._quests.set(data.quests ?? []);
         if (data.stats) this._stats.set(data.stats);
       }
     } catch {
-      /* corrupt data — start fresh rather than crash */
+      /* unreadable store — start fresh rather than crash */
     }
     this._loading.set(false);
   }
 
   private persist() {
-    const data: PersistShape = { quests: this._quests(), stats: this._stats() };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      /* storage full / unavailable — keep running in-memory */
-    }
+    const snapshot = { quests: this._quests(), stats: this._stats() };
+    this.saveChain = this.saveChain
+      .catch(() => {})
+      .then(() => this.persistence.save(snapshot))
+      .catch(() => { /* keep running in-memory if a write fails */ });
   }
 
   /** Award XP, handle level-ups and the daily streak. Mirrors the old backend logic. */
