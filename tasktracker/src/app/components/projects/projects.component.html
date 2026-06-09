@@ -1,0 +1,71 @@
+<div class="projects-bar">
+
+  <!-- "All" pill -->
+  <button class="proj-pill" [class.active]="active === null" (click)="selectProject(null)">
+    All
+  </button>
+
+  <!-- project pills -->
+  <ng-container *ngFor="let p of projects">
+    <!-- view mode -->
+    <div class="proj-pill-wrap" *ngIf="editingId() !== p.id">
+      <button class="proj-pill" [class.active]="active === p.id"
+              [style.--proj-color]="p.color" (click)="selectProject(p.id)">
+        <span class="proj-dot" [style.background]="p.color"></span>
+        {{ p.name }}
+        <span class="proj-count" *ngIf="taskCount(p.id)">{{ taskCount(p.id) }}</span>
+      </button>
+      <button class="proj-edit-btn" (click)="startEdit(p)" title="Edit project">
+        <lucide-angular name="pencil" [size]="11" [strokeWidth]="2"></lucide-angular>
+      </button>
+    </div>
+
+    <!-- inline edit mode -->
+    <div class="proj-edit-inline" *ngIf="editingId() === p.id">
+      <div class="color-swatches">
+        <button *ngFor="let c of palette" class="swatch"
+                [style.background]="c"
+                [class.selected]="editColor() === c"
+                (click)="editColor.set(c)"></button>
+      </div>
+      <input class="proj-name-input" [ngModel]="editName()"
+             (ngModelChange)="editName.set($event)"
+             (keydown.enter)="confirmEdit()"
+             (keydown.escape)="editingId.set(null)"
+             placeholder="Project name" />
+      <button class="proj-confirm-btn" (click)="confirmEdit()">
+        <lucide-angular name="check" [size]="13" [strokeWidth]="2.5"></lucide-angular>
+      </button>
+      <button class="proj-del-btn" (click)="deleteProject(p.id)" title="Delete project">
+        <lucide-angular name="trash-2" [size]="12" [strokeWidth]="2"></lucide-angular>
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- new project -->
+  <div class="proj-add-inline" *ngIf="managing()">
+    <div class="color-swatches">
+      <button *ngFor="let c of palette" class="swatch"
+              [style.background]="c"
+              [class.selected]="newColor() === c"
+              (click)="newColor.set(c)"></button>
+    </div>
+    <input class="proj-name-input" [ngModel]="newName()"
+           (ngModelChange)="newName.set($event)"
+           (keydown.enter)="confirmAdd()"
+           (keydown.escape)="managing.set(false)"
+           placeholder="Project name…"
+           #newInput />
+    <button class="proj-confirm-btn" (click)="confirmAdd()" [disabled]="!newName().trim()">
+      <lucide-angular name="check" [size]="13" [strokeWidth]="2.5"></lucide-angular>
+    </button>
+    <button class="proj-cancel-btn" (click)="managing.set(false)">
+      <lucide-angular name="x" [size]="13" [strokeWidth]="2.5"></lucide-angular>
+    </button>
+  </div>
+
+  <button class="proj-new-btn" (click)="startAdd()" *ngIf="!managing()" title="New project">
+    <lucide-angular name="plus" [size]="13" [strokeWidth]="2.5"></lucide-angular>
+  </button>
+
+</div>

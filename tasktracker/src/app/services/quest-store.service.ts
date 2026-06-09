@@ -1,12 +1,12 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { Quest, ColumnId, PlayerStats, RARITY_XP, AppSettings } from '../models/quest';
+import { Quest, ColumnId, PlayerStats, RARITY_XP, AppSettings, Project, PROJECT_PALETTE } from '../models/quest';
 import { createPersistence, PersistShape } from './persistence';
 
 export function xpForLevel(level: number): number {
   return 100 + level * 50;
 }
 
-const DEFAULT_SETTINGS: AppSettings = { autoArchiveDays: 7 };
+const DEFAULT_SETTINGS: AppSettings = { autoArchiveDays: 7, projects: [] };
 
 function pickAvatar(rarity: string, tags: string[]): string {
   if (tags.includes('bug'))      return '🛠️';
@@ -35,18 +35,30 @@ export class QuestStore {
   private readonly _stats    = signal<PlayerStats>({ level: 1, xp: 0, streak: 0, lastActiveDate: '' });
   private readonly _settings = signal<AppSettings>({ ...DEFAULT_SETTINGS });
   private readonly _loading  = signal(true);
-  private readonly _focusToday   = signal(false);
-  private readonly _showArchive  = signal(false);
+  private readonly _focusToday    = signal(false);
+  private readonly _showArchive   = signal(false);
+  private readonly _activeProject = signal<string | null>(null); // null = All
 
-  readonly quests      = this._quests.asReadonly();
-  readonly stats       = this._stats.asReadonly();
-  readonly settings    = this._settings.asReadonly();
-  readonly loading     = this._loading.asReadonly();
-  readonly focusToday  = this._focusToday.asReadonly();
-  readonly showArchive = this._showArchive.asReadonly();
+  readonly quests         = this._quests.asReadonly();
+  readonly stats          = this._stats.asReadonly();
+  readonly settings       = this._settings.asReadonly();
+  readonly loading        = this._loading.asReadonly();
+  readonly focusToday     = this._focusToday.asReadonly();
+  readonly showArchive    = this._showArchive.asReadonly();
+  readonly activeProject  = this._activeProject.asReadonly();
+  readonly projects       = computed(() => this._settings().projects ?? []);
 
-  /** Live tasks visible on the board (not archived). */
-  readonly liveQuests = computed(() => this._quests().filter(q => !q.archived));
+  /** Live tasks visible on the board (not archived), filtered by active project. */
+  readonly liveQuests = computed(() => {
+    const proj = this._activeProject();
+    return this._quests().filter(q =>
+      !q.archived && (proj === null || q.projectId === proj)
+    );
+  });
+
+  /** All live tasks regardless of project filter (for the progress bar). */
+  readonly allLiveQuests = computed(() => this._quests().filter(q => !q.archived));
+
   /** Archived tasks, newest first. */
   readonly archivedQuests = computed(() =>
     this._quests().filter(q => q.archived).sort((a, b) =>
@@ -54,8 +66,34 @@ export class QuestStore {
     )
   );
 
-  toggleFocusToday()  { this._focusToday.update(v => !v); }
-  toggleArchiveView() { this._showArchive.update(v => !v); }
+  toggleFocusToday()         { this._focusToday.update(v => !v); }
+  toggleArchiveView()        { this._showArchive.update(v => !v); }
+  setActiveProject(id: string | null) { this._activeProject.set(id); }
+
+  /* ─── project CRUD ─── */
+
+  addProject(name: string, color: string): Project {
+    const proj: Project = { id: newId(), name: name.trim(), color };
+    this._settings.update(s => ({ ...s, projects: [...(s.projects ?? []), proj] }));
+    this.persist();
+    return proj;
+  }
+
+  updateProject(id: string, patch: Partial<Pick<Project, 'name' | 'color'>>) {
+    this._settings.update(s => ({
+      ...s,
+      projects: (s.projects ?? []).map(p => p.id === id ? { ...p, ...patch } : p),
+    }));
+    this.persist();
+  }
+
+  deleteProject(id: string) {
+    // Unassign tasks that belonged to this project
+    this._quests.update(list => list.map(q => q.projectId === id ? { ...q, projectId: undefined } : q));
+    this._settings.update(s => ({ ...s, projects: (s.projects ?? []).filter(p => p.id !== id) }));
+    if (this._activeProject() === id) this._activeProject.set(null);
+    this.persist();
+  }
 
   private readonly persistence = createPersistence();
   private saveChain: Promise<void> = Promise.resolve();
@@ -149,6 +187,8 @@ export class QuestStore {
       subtasks: partial.subtasks ?? [],
       xp: RARITY_XP[partial.rarity ?? 'common'],
       createdAt: new Date().toISOString(),
+      // auto-assign to active project if one is selected
+      projectId: partial.projectId ?? this._activeProject() ?? undefined,
     };
     this._quests.update(list => [quest, ...list]);
     this.persist();

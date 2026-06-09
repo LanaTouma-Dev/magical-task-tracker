@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { BoardComponent } from './components/board/board.component';
 import { ArchiveComponent } from './components/archive/archive.component';
+import { ProjectsComponent } from './components/projects/projects.component';
 import { SpellSheetComponent } from './components/spell-sheet/spell-sheet.component';
 import { EditQuestComponent } from './components/edit-quest/edit-quest.component';
 import { TemplatesComponent } from './components/templates/templates.component';
@@ -16,7 +17,7 @@ import { NotificationService } from './services/notification.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule, BoardComponent, SpellSheetComponent, EditQuestComponent, TemplatesComponent, SearchBarComponent, ArchiveComponent],
+  imports: [CommonModule, FormsModule, LucideAngularModule, BoardComponent, SpellSheetComponent, EditQuestComponent, TemplatesComponent, SearchBarComponent, ArchiveComponent, ProjectsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -61,8 +62,8 @@ export class AppComponent {
 
   readonly parsed = computed(() => this.parser.parse(this.input()));
 
-  readonly taskTotal = computed(() => this.store.liveQuests().length);
-  readonly taskDone  = computed(() => this.store.liveQuests().filter(q => q.column === 'defeated').length);
+  readonly taskTotal = computed(() => this.store.allLiveQuests().length);
+  readonly taskDone  = computed(() => this.store.allLiveQuests().filter(q => q.column === 'defeated').length);
   readonly taskPct   = computed(() => this.taskTotal() === 0 ? 0 : Math.round((this.taskDone() / this.taskTotal()) * 100));
 
   readonly sparkles = ['✦','✧','✦','✧','⋆','✦','✧'];

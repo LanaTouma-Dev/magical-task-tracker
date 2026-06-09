@@ -157,6 +157,14 @@ qj-search { display: block; flex: none; }
   animation: shimmer 2.5s linear infinite;
 }
 
+/* ─── PROJECTS ROW ─── */
+.projects-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  flex: none;
+}
+
 /* ─── TEMPLATES ROW ─── */
 .summon-row {
   display: flex;

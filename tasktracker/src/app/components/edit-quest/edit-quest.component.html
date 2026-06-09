@@ -44,6 +44,23 @@
         <input class="field-input" [(ngModel)]="tagsRaw" placeholder="#work #bug #design" />
       </label>
 
+      <label class="field" *ngIf="projects().length">
+        <span class="field-label">Project</span>
+        <div class="project-select-row">
+          <button type="button" class="proj-opt" [class.selected]="!projectId"
+                  (click)="projectId = undefined">
+            None
+          </button>
+          <button type="button" class="proj-opt" *ngFor="let p of projects()"
+                  [class.selected]="projectId === p.id"
+                  [style.--c]="p.color"
+                  (click)="projectId = p.id">
+            <span class="proj-dot" [style.background]="p.color"></span>
+            {{ p.name }}
+          </button>
+        </div>
+      </label>
+
       <label class="field">
         <span class="field-label">Subtasks
           <span class="hint" *ngIf="subtasks.length">{{ subtasks.length }} step{{ subtasks.length === 1 ? '' : 's' }}</span>

@@ -40,6 +40,12 @@ export class BoardComponent {
   }
 
   readonly focusToday = this.store.focusToday;
+  readonly projects   = this.store.projects;
+
+  projectColor(projectId: string | undefined): string | undefined {
+    if (!projectId) return undefined;
+    return this.projects().find(p => p.id === projectId)?.color;
+  }
   readonly focusEmpty = computed(() => {
     if (!this.store.focusToday()) return false;
     const map = this.questsByColumn();

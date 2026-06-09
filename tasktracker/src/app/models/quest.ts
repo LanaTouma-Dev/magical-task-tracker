@@ -11,6 +11,7 @@ export interface Quest {
   id: string;
   title: string;
   notes?: string;
+  projectId?: string;
   rarity: Rarity;
   column: ColumnId;
   tags: string[];
@@ -31,9 +32,22 @@ export interface PlayerStats {
   lastActiveDate: string;
 }
 
+export interface Project {
+  id: string;
+  name: string;
+  color: string; // hex
+}
+
 export interface AppSettings {
   autoArchiveDays: number; // 0 = disabled
+  projects: Project[];
 }
+
+export const PROJECT_PALETTE = [
+  '#B8336A', '#7B61FF', '#3D9BE9', '#36B37E',
+  '#FF8B00', '#E05C97', '#00B8D9', '#6B3D82',
+  '#C47A00', '#2D7A4F',
+];
 
 export const RARITY_XP: Record<Rarity, number> = {
   common: 5,

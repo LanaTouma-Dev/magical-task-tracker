@@ -40,6 +40,8 @@ export class QuestCardComponent {
   onComplete(ev: Event) { ev.stopPropagation(); this.complete.emit(this.quest.id); }
   onReopen(ev: Event)   { ev.stopPropagation(); this.reopen.emit(this.quest.id); }
 
+  @Input() projectColor: string | undefined;
+
   get subtasks()      { return this.quest.subtasks ?? []; }
   get subtaskDone()   { return this.subtasks.filter(s => s.done).length; }
   get subtaskTotal()  { return this.subtasks.length; }

@@ -29,6 +29,8 @@
     </div>
   </div>
 
+  <span class="card-project-dot" *ngIf="projectColor"
+        [style.background]="projectColor" title="Project"></span>
   <div class="card-title">{{ quest.title }}</div>
 
   <div class="card-notes" *ngIf="quest.notes">{{ quest.notes }}</div>

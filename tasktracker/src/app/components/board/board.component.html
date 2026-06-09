@@ -28,6 +28,7 @@
                [cdkDragData]="q"
                (delete)="onDelete($event)"
                (edit)="onEdit($event)"
+               [projectColor]="projectColor(q.projectId)"
                (complete)="onComplete($event)"
                (reopen)="onReopen($event)"
                (toggleSubtask)="onToggleSubtask($event)">

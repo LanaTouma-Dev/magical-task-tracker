@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { Quest, Rarity, Subtask } from '../../models/quest';
 import { QuestStore } from '../../services/quest-store.service';
+import { computed } from '@angular/core';
 
 @Component({
   selector: 'qj-edit-quest',
@@ -24,9 +25,12 @@ export class EditQuestComponent implements OnChanges {
   rarity: Rarity = 'common';
   dueDate = '';
   tagsRaw = '';
+  projectId: string | undefined;
   subtasks: Subtask[] = [];
   newSubtask = '';
   private avatar: string | undefined;
+
+  readonly projects = computed(() => this.store.projects());
 
   readonly rarities: { value: Rarity; label: string; icon: string }[] = [
     { value: 'common',    label: 'Low',      icon: '★' },
@@ -44,8 +48,9 @@ export class EditQuestComponent implements OnChanges {
       this.notes   = this.quest.notes ?? '';
       this.rarity  = this.quest.rarity;
       this.dueDate = this.quest.dueDate ?? '';
-      this.avatar  = this.quest.avatar;
-      this.subtasks = (this.quest.subtasks ?? []).map(s => ({ ...s }));
+      this.avatar    = this.quest.avatar;
+      this.projectId = this.quest.projectId;
+      this.subtasks  = (this.quest.subtasks ?? []).map(s => ({ ...s }));
       this.newSubtask = '';
       this.tagsRaw = this.quest.tags.join(' #').replace(/^/, this.quest.tags.length ? '#' : '');
     }
@@ -75,12 +80,13 @@ export class EditQuestComponent implements OnChanges {
       .filter(Boolean);
 
     const changes = {
-      title:   this.title.trim(),
-      notes:   this.notes.trim() || undefined,
-      rarity:  this.rarity,
-      dueDate: this.dueDate.trim() || undefined,
+      title:     this.title.trim(),
+      notes:     this.notes.trim() || undefined,
+      rarity:    this.rarity,
+      dueDate:   this.dueDate.trim() || undefined,
       tags,
-      subtasks: this.subtasks,
+      projectId: this.projectId || undefined,
+      subtasks:  this.subtasks,
     };
 
     if (this.isNew) {
