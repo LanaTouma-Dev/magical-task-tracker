@@ -60,7 +60,7 @@ export const RARITY_ICON: Record<Rarity, string> = {
   common:    'star',
   rare:      'shield-check',
   epic:      'zap',
-  legendary: 'skull',
+  legendary: 'crown',
 };
 
 export const RARITY_LABEL: Record<Rarity, string> = {

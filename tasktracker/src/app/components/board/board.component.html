@@ -35,8 +35,8 @@
       </qj-card>
 
       <div class="slot" *ngIf="questsIn(col.id).length === 0">
-        <lucide-angular name="plus" [size]="16" [strokeWidth]="1.75" class="slot-icon"></lucide-angular>
-        <span>drop or add a task</span>
+        <span class="slot-emoji">{{ col.id === 'backlog' ? '✦' : col.id === 'battle' ? '◌' : '✓' }}</span>
+        <span class="slot-msg">{{ col.id === 'backlog' ? 'nothing planned yet' : col.id === 'battle' ? 'drag a task here to start' : 'finished tasks appear here' }}</span>
       </div>
     </div>
   </section>

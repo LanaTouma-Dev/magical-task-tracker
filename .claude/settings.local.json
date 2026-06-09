@@ -20,7 +20,13 @@
       "Read(//c/c/Games/magical-task-tracker/tasktracker/src-tauri/capabilities/**)",
       "Bash(grep -riE \"VALUES \\\\\\(\\\\\\\\\\\\$1|VALUES \\\\\\(\\\\?|\\\\\\\\\\\\$1, \\\\\\\\\\\\$2|sqlite.*\\\\\\\\\\\\$|placeholder\" node_modules/@tauri-apps/plugin-sql/README.md)",
       "Bash(grep -iE \"execute|VALUES|\\\\\\\\\\\\$1|\\\\\\\\?[0-9]?\" node_modules/@tauri-apps/plugin-sql/README.md)",
-      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.cargo\\\\bin;\" + $env:Path; cd C:\\\\Games\\\\magical-task-tracker\\\\tasktracker; npm run app:build 2>&1 | Select-Object -Last 22)"
+      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.cargo\\\\bin;\" + $env:Path; cd C:\\\\Games\\\\magical-task-tracker\\\\tasktracker; npm run app:build 2>&1 | Select-Object -Last 22)",
+      "Bash(find C:/Games/Selene/SeleneLanding/src -type f | head -40)",
+      "Bash(Expand-Archive -Path \"C:\\\\Users\\\\Legion\\\\Desktop\\\\selene.zip\" -DestinationPath \"C:\\\\Users\\\\Legion\\\\Desktop\\\\selene-extracted\" -Force)",
+      "Read(//c/Users/Legion/Desktop/**)",
+      "Bash(ls C:/Games/Selene/SeleneLanding/public/ 2>/dev/null || ls C:/Games/Selene/SeleneLanding/src/assets/ 2>/dev/null)",
+      "Bash(mkdir -p \"C:/Games/Selene/SeleneLanding/.claude\")",
+      "mcp__Claude_in_Chrome__tabs_context_mcp"
     ]
   }
 }

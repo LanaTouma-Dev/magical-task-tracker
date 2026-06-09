@@ -8,7 +8,7 @@ import {
   Zap, Sparkles, WandSparkles, Star, BookOpen,
   ClipboardList, ShieldCheck, CircleX,
   Check, CircleCheck, CircleDashed, Loader, Target, RotateCcw, Plus,
-  Download, Upload, Archive, Settings, Trash2, Inbox
+  Download, Upload, Archive, Settings, Trash2, Inbox, Crown
 } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -25,7 +25,7 @@ export const appConfig: ApplicationConfig = {
       Zap, Sparkles, WandSparkles, Star, BookOpen,
       ClipboardList, ShieldCheck, CircleX,
       Check, CircleCheck, CircleDashed, Loader, Target, RotateCcw, Plus,
-      Download, Upload, Archive, Settings, Trash2, Inbox
+      Download, Upload, Archive, Settings, Trash2, Inbox, Crown
     })), provideServiceWorker('ngsw-worker.js', {
             // Enabled for the web/PWA build, but NOT inside the Tauri desktop
             // shell (it's a local app — SW caching is unnecessary and the
