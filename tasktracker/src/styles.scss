@@ -1,23 +1,23 @@
 /* ─── Quest Journal global styles ─── */
 
 :root {
-  --berry:     #B8336A;
-  --wisteria:  #C490D1;
-  --periwinkle:#ACACDE;
-  --icy:       #ABDAFC;
-  --mist:      #E5FCFF;
+  --berry:      #c9388a;
+  --wisteria:   #c8a8e0;
+  --periwinkle: #a8c8e0;
+  --icy:        #a8d8f0;
+  --mist:       #f4d6e8;
 
-  --ink:       #3a2340;
-  --ink-soft:  #6b5577;
+  --ink:        #fbf4fb;
+  --ink-soft:   rgba(251, 244, 251, .55);
 
-  --display:   'Caprasimo', 'Fraunces', serif;
-  --body:      'Zen Kaku Gothic New', system-ui, sans-serif;
-  --mono:      'JetBrains Mono', monospace;
+  --display:    'Cormorant Garamond', Georgia, serif;
+  --body:       'Quicksand', system-ui, sans-serif;
+  --mono:       'JetBrains Mono', monospace;
 
-  --shadow-soft: 0 10px 40px -12px rgba(184, 51, 106, 0.18),
-                 0 4px 14px -4px rgba(164, 144, 209, 0.15);
-  --shadow-deep: 0 24px 60px -20px rgba(184, 51, 106, 0.30),
-                 0 8px 24px -8px rgba(164, 144, 209, 0.25);
+  --shadow-soft: 0 10px 40px -12px rgba(201, 56, 138, .25),
+                 0 4px 14px -4px rgba(164, 144, 209, .2);
+  --shadow-deep: 0 24px 60px -20px rgba(201, 56, 138, .4),
+                 0 8px 24px -8px rgba(164, 144, 209, .35);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,11 +31,11 @@ html, body {
 
 body {
   background:
-    radial-gradient(ellipse 60% 50% at 10% 10%, #C490D155 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 90% 20%, #ABDAFC88 0%, transparent 55%),
-    radial-gradient(ellipse 70% 60% at 80% 100%, #B8336A33 0%, transparent 60%),
-    radial-gradient(ellipse 60% 60% at 0% 100%, #ACACDE66 0%, transparent 55%),
-    linear-gradient(135deg, #E5FCFF 0%, #ABDAFC 50%, #C490D1 100%);
+    radial-gradient(ellipse 60% 50% at 10% 10%,  rgba(201, 56, 138, .18),  transparent 60%),
+    radial-gradient(ellipse 50% 60% at 90% 20%,  rgba(168, 216, 240, .12), transparent 55%),
+    radial-gradient(ellipse 70% 60% at 80% 100%, rgba(144, 144, 192, .15), transparent 60%),
+    radial-gradient(ellipse 60% 60% at 0%  100%, rgba(172, 172, 222, .12), transparent 55%),
+    #1a0b2e;
   background-attachment: fixed;
   position: relative;
 }

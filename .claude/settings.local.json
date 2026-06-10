@@ -26,7 +26,15 @@
       "Read(//c/Users/Legion/Desktop/**)",
       "Bash(ls C:/Games/Selene/SeleneLanding/public/ 2>/dev/null || ls C:/Games/Selene/SeleneLanding/src/assets/ 2>/dev/null)",
       "Bash(mkdir -p \"C:/Games/Selene/SeleneLanding/.claude\")",
-      "mcp__Claude_in_Chrome__tabs_context_mcp"
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4202/)",
+      "Bash(mkdir -p \"C:/Games/Ember/src/app/services\" \"C:/Games/Ember/src/app/components/flame\")",
+      "Bash(npm run *)",
+      "Bash(node branding/gen-icons.mjs)",
+      "Bash(npx tauri *)",
+      "Bash(grep -r \"fn set_icon\\\\|Image::from\\\\|include_image\" C:/Games/Ember/node_modules/.cache 2>/dev/null | head -5; grep -r \"set_icon\\\\|from_bytes\\\\|Image\" C:/Users/Legion/.cargo/registry/src/*/tauri-2*/src/window.rs 2>/dev/null | head -20)",
+      "Bash(cp \"C:/Games/fable/public/94c4c298-a7c1-4ea7-b9a6-640dd21a9463-removebg-preview.png\" \"C:/Games/Selene/SeleneLanding/src/app/fable logo.png\")",
+      "Bash(cp \"C:/Games/fable/public/Screenshot \\(614\\).png\" \"C:/Games/Selene/SeleneLanding/src/app/fable screenshot.png\")"
     ]
   }
 }
